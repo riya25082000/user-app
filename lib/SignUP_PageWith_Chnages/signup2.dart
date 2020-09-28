@@ -3,6 +3,7 @@ import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart.';
+import 'package:flutter/services.dart';
 
 class SignUp extends StatefulWidget {
   @override
