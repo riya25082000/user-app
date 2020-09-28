@@ -461,7 +461,7 @@ class _SignUpState extends State<SignUp> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          decoration: textfield("Username"),
+                          decoration: textfield("Name"),
                           controller: _usernameController,
                           validator: (String value) {
                             if (value.isEmpty) {
