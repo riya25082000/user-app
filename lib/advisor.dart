@@ -19,7 +19,7 @@ class _AdvisorState extends State<Advisor> {
   String adEmail = '';
   String adPhone = '';
   void getAdvisor() async {
-    print("****************************************");
+    print("***************************************");
     print('ch1');
     print("****************************************");
     var url = 'http://sanjayagarwal.in/Finance App/AdvisorOfUser.php';
