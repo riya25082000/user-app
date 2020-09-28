@@ -1,8 +1,11 @@
 
 
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_app/HomePage.dart';
+import 'package:finance_app/HomePage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lock_screen/flutter_lock_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,6 +13,7 @@ import 'package:local_auth/local_auth.dart';
 
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 SharedPreferences preferences;
 String id = "";
@@ -27,9 +31,10 @@ void readData() async{
 
 
 class PassCodeScreen extends StatefulWidget {
-  PassCodeScreen({Key key, this.title}) : super(key: key);
+  String currentUserID;
+  PassCodeScreen({@required this.currentUserID});
 
-  final String title;
+
 
   @override
   _PassCodeScreenState createState() => new _PassCodeScreenState();
@@ -51,10 +56,25 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    readData();
+    getPin();
   }
   bool isFingerprint = false;
 
+  Future<Null> getPin() async{
+    var url =
+        'http://sanjayagarwal.in/Finance App/MpinDetail.php';
+    final response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        "UserID": currentUserID,
+      }),
+    );
+     message= await jsonDecode(response.body);
+    print("****************************************");
+    print(message);
+    print("****************************************");
+  }
+ var message;
 
   Future<Null> biometrics() async {
     final LocalAuthentication auth = new LocalAuthentication();
@@ -95,23 +115,21 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         wrongPassTitle: "Opps!",
         wrongPassCancelButtonText: "Cancel",
         passCodeVerify: (passcode) async {
-          Firestore.instance.collection('users').document(id)
-              .get().then((DocumentSnapshot) {
-                myPass = (DocumentSnapshot.data['pin'].toString());
 
-                for (int i = 0; i < myPass.length; i++) {
-                  if (passcode[i] != myPass[i]) {
+
+                for (int i = 0; i < message.length; i++) {
+                  if (passcode[i] != message[i]) {
                     return false;
                   }
                 }
-          });
+
 
           return true;
         },
         onSuccess: () {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
-                return HomeScreen(currentUserId: currentUserID,);
+                return HomePage(currentUserID: '987654321',);
               }));
         });
   }

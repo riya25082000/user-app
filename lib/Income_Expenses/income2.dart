@@ -29,9 +29,9 @@ class _income2State extends State<income2> {
           <String, String>{"UserID": currentUserID, "IncomeID": incomeID}),
     );
     var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
+    // print("****************************************");
+    // print(message);
+    // print("****************************************");
     if (message == "Successfully Deleted") {
       getIncome();
     } else {
@@ -48,9 +48,9 @@ class _income2State extends State<income2> {
           <String, String>{"UserID": currentUserID, "ExpenseID": expenseID}),
     );
     var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
+    // print("****************************************");
+    // print(message);
+    // print("****************************************");
     if (message == "Successfully Deleted") {
       getExpense();
     } else {
@@ -93,9 +93,9 @@ class _income2State extends State<income2> {
       }),
     );
     var message1 = await jsonDecode(response.body);
-    print("****************************************");
-    print(message1);
-    print("****************************************");
+    // print("****************************************");
+    // print(message1);
+    // print("****************************************");
     setState(() {
       i = message1;
       _loading = false;
@@ -138,7 +138,7 @@ class _income2State extends State<income2> {
     );
     var message4 = await jsonDecode(response.body);
     print("****************************************");
-    print(message4);
+    print(message4 + "message");
     print("****************************************");
     setState(() {
       e = message4;
