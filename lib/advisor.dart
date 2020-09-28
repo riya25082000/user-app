@@ -4,26 +4,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:responsive_text_field/responsive_text_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-void main() {
-  runApp(MyApp());
-}
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-
-        primarySwatch: Colors.cyan,
-
-      ),
-      home: Advisor(),
-    );
-  }
-}
 
 class Advisor extends StatefulWidget {
   final String currentUserID;
