@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:finance_app/HomePage/homepage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -18,7 +23,7 @@ class NewGoalsPage extends StatefulWidget {
 class _NewGoalsPageState extends State<NewGoalsPage> {
   String currentUserID;
   _NewGoalsPageState({@required this.currentUserID});
-  int current = 0;
+  int current = 0, time = 0;
   void changes(int index) {
     setState(() {
       current = index;
@@ -49,20 +54,91 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
     });
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/Goals/GoalDetails.php';
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-        "UserID": currentUserID,
-      }),
-    );
-    var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
-    setState(() {
-      data = message;
-      _loading = false;
-    });
+    try {
+      final response = await http
+          .post(
+            url,
+            body: jsonEncode(<String, String>{
+              "UserID": currentUserID,
+            }),
+          )
+          .timeout(const Duration(seconds: 30));
+      var message = await jsonDecode(response.body);
+      print("****************************************");
+      print(message);
+      print("****************************************");
+      setState(() {
+        data = message;
+        _loading = false;
+      });
+    } on TimeoutException catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.error),
+                Text("Timeout Error"),
+              ],
+            ),
+            content: Text(
+                "The data is taking taking too long to load. Please try again later."),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => HomePage(
+                                currentUserID: currentUserID,
+                              )));
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
+    } on Error catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text(
+                "There seems to be an issue with your internet connection. Please check."),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
+    } on SocketException catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text(
+                "There seems to be an issue with your internet connection. Please check."),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
