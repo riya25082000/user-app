@@ -1,36 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
+import '../erroralert.dart';
 import 'ShowLetter.dart';
 import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class NewsLetter extends StatefulWidget {
+  String currentUserID;
+  NewsLetter({@required this.currentUserID});
   @override
-  _NewsLetterState createState() => _NewsLetterState();
+  _NewsLetterState createState() =>
+      _NewsLetterState(currentUserID: currentUserID);
 }
 
 class _NewsLetterState extends State<NewsLetter> {
+  String currentUserID;
+  _NewsLetterState({@required this.currentUserID});
   String x = "May 2020";
   List letter = [];
   bool _loading;
   void getLetter() async {
-    setState(() {
-      _loading = true;
-    });
-    var url =
-        'http://sanjayagarwal.in/Finance App/UserApp/NewsLetter/NewsLetterDetails.php';
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{}),
-    );
-    var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
-    setState(() {
-      letter = message;
-      _loading = false;
-    });
+    try {
+      setState(() {
+        _loading = true;
+      });
+      var url =
+          'http://sanjayagarwal.in/Finance App/UserApp/NewsLetter/NewsLetterDetails.php';
+      final response = await http
+          .post(
+            url,
+            body: jsonEncode(<String, String>{}),
+          )
+          .timeout(Duration(seconds: 30));
+      var message = await jsonDecode(response.body);
+      print("****************************************");
+      print(message);
+      print("****************************************");
+      setState(() {
+        letter = message;
+        _loading = false;
+      });
+    } on TimeoutException catch (e) {
+      alerttimeout(context, currentUserID);
+    } on Error catch (e) {
+      alerterror(context, currentUserID);
+    } on SocketException catch (e) {
+      alertinternet(context, currentUserID);
+    }
   }
 
   @override
