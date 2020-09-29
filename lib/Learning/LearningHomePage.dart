@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:io';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../erroralert.dart';
 import 'Introduction.dart';
 import 'ModuleCode.dart';
 
@@ -19,25 +22,35 @@ class _LearningHomePageState extends State<LearningHomePage> {
   List learn = [];
   bool _loading;
   void getQues() async {
-    setState(() {
-      _loading = true;
-    });
-    var url =
-        'http://sanjayagarwal.in/Finance App/UserApp/Learning/Learning.php';
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-        "UserID": currentUserID,
-      }),
-    );
-    var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
-    setState(() {
-      learn = message;
-      _loading = false;
-    });
+    try {
+      setState(() {
+        _loading = true;
+      });
+      var url =
+          'http://sanjayagarwal.in/Finance App/UserApp/Learning/Learning.php';
+      final response = await http
+          .post(
+            url,
+            body: jsonEncode(<String, String>{
+              "UserID": currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message = await jsonDecode(response.body);
+      print("****************************************");
+      print(message);
+      print("****************************************");
+      setState(() {
+        learn = message;
+        _loading = false;
+      });
+    } on TimeoutException catch (e) {
+      alerttimeout(context, currentUserID);
+    } on Error catch (e) {
+      alerterror(context, currentUserID);
+    } on SocketException catch (e) {
+      alertinternet(context, currentUserID);
+    }
   }
 
   @override
