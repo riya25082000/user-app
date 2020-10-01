@@ -62,11 +62,7 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
   }
 
   var message;
- var message;
   bool isFingerprint = false;
-
-  bool isFingerprint = false;
-
   Future<Null> biometrics() async {
     final LocalAuthentication auth = new LocalAuthentication();
     bool authenticated = false;
@@ -130,14 +126,10 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         onSuccess: () {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
-            return HomePage(
-              currentUserID: '987654321',
+            return HomeScreen(
+              currentUserId: currentUserID,
             );
-          
-
-          return HomeScreen(
-            currentUserId: currentUserID,
-          );
+          }));
         });
   }
 }
