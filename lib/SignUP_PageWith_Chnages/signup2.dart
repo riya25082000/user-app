@@ -148,6 +148,7 @@ class _SignUpState extends State<SignUp> {
 
   final _formKey = GlobalKey<FormState>();
   bool confirmMobile = false;
+
   void checkMobileOTP(String otp) {
     setState(() {
       confirmMobile = true;
@@ -171,6 +172,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   Map<String, String> _authData = {'email': '', 'password': ''};
+
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       return;
@@ -182,89 +184,6 @@ class _SignUpState extends State<SignUp> {
     } catch (error) {
       var errorMessage = 'Authentication Failed. Please try again';
       _showErrorDailog(errorMessage);
-    }
-  }
-
-  Future<bool> loginUser(String phone, BuildContext context) async {
-    FirebaseAuth _auth = FirebaseAuth.instance;
-
-    try {
-      _auth.verifyPhoneNumber(
-          phoneNumber: phone,
-          timeout: Duration(seconds: 60),
-          verificationCompleted: (AuthCredential credential) async {
-            Navigator.of(context).pop();
-
-            AuthResult result = await _auth.signInWithCredential(credential);
-
-            FirebaseUser user = result.user;
-
-            if (user != null) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          HomePage(currentUserID: currentUserID)));
-            } else {
-              print("Error");
-            }
-
-            //This callback would gets called when verification is done auto maticlly
-          },
-          verificationFailed: (AuthException exception) {
-            print(exception);
-          },
-          codeSent: (String verificationId, [int forceResendingToken]) {
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Give the code?"),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        TextField(
-                          controller: _codeController,
-                        ),
-                      ],
-                    ),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text("Confirm"),
-                        textColor: Colors.white,
-                        color: Colors.blue,
-                        onPressed: () async {
-                          final code = _codeController.text.trim();
-                          AuthCredential credential =
-                              PhoneAuthProvider.getCredential(
-                                  verificationId: verificationId,
-                                  smsCode: code);
-
-                          AuthResult result =
-                              await _auth.signInWithCredential(credential);
-
-                          FirebaseUser user = result.user;
-
-                          if (user != null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage(
-                                          currentUserID: currentUserID,
-                                        )));
-                          } else {
-                            print("Error");
-                          }
-                        },
-                      )
-                    ],
-                  );
-                });
-          },
-          codeAutoRetrievalTimeout: null);
-    } catch (error) {
-      throw error;
     }
   }
 
@@ -286,6 +205,9 @@ class _SignUpState extends State<SignUp> {
   }
 
   String otp = "";
+
+
+
   void toggleMobile() {
     if (confirmMobile == false) {
       setState(() {
@@ -380,6 +302,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   bool checked = false;
+
   void toggle(bool check) {
     if (checked == false) {
       setState(() {
@@ -461,7 +384,7 @@ class _SignUpState extends State<SignUp> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
-                          decoration: textfield("Username"),
+                          decoration: textfield("Name"),
                           controller: _usernameController,
                           validator: (String value) {
                             if (value.isEmpty) {
@@ -689,7 +612,7 @@ class _SignUpState extends State<SignUp> {
                         side: BorderSide(color: Colors.black),
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      onPressed: controlSignIn,
+                      onPressed: () {},
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -739,81 +662,5 @@ class _SignUpState extends State<SignUp> {
         );
       }),
     );
-  }
-
-  Future<Null> controlSignIn() async {
-    preferences = await SharedPreferences.getInstance();
-    this.setState(() {
-      isLoading = true;
-    });
-
-    GoogleSignInAccount googleUser = await googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuthentication =
-        await googleUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-        idToken: googleAuthentication.idToken,
-        accessToken: googleAuthentication.accessToken);
-
-    FirebaseUser firebaseUser =
-        (await firebaseAuth.signInWithCredential(credential)).user;
-
-// Sign in success
-
-    if (firebaseUser != null) {
-      // if already signed up
-
-      final QuerySnapshot resultQuery = await Firestore.instance
-          .collection("users")
-          .where("id", isEqualTo: firebaseUser.uid)
-          .getDocuments();
-      final List<DocumentSnapshot> documentSnapshots = resultQuery.documents;
-
-      // if user is new
-
-      if (documentSnapshots.length == 0) {
-        Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .setData({
-          "username": firebaseUser.displayName,
-          "photoUrl": firebaseUser.photoUrl,
-          "createdAt": DateTime.now().millisecondsSinceEpoch.toString(),
-        });
-
-        // write data locally
-
-        currentUser = firebaseUser;
-        await preferences.setString("id", currentUser.uid);
-        await preferences.setString("username", currentUser.displayName);
-        await preferences.setString("photoUrl", currentUser.photoUrl);
-      } else {
-        //retrieve data from firebase
-        currentUser = firebaseUser;
-        await preferences.setString("id", documentSnapshots[0]["id"]);
-        await preferences.setString(
-            "username", documentSnapshots[0]["username"]);
-        await preferences.setString(
-            "photoUrl", documentSnapshots[0]["photoUrl"]);
-      }
-
-      Fluttertoast.showToast(msg: "Sign In Success !!");
-      this.setState(() {
-        isLoading = false;
-      });
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(currentUserID: currentUserID)));
-    }
-
-// sign in failed
-
-    else {
-      Fluttertoast.showToast(msg: "Please try again !!");
-      this.setState(() {
-        isLoading = false;
-      });
-    }
   }
 }

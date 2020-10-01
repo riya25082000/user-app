@@ -56,11 +56,19 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
     try {
       final response = await http
           .post(
+
         url,
         body: jsonEncode(<String, String>{
           "UserID": currentUserID,
         }),
       )
+
+            url,
+            body: jsonEncode(<String, String>{
+              "UserID": currentUserID,
+            }),
+          )
+
           .timeout(const Duration(seconds: 30));
       var message = await jsonDecode(response.body);
       print("****************************************");

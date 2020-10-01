@@ -9,7 +9,8 @@ class RewardsPages extends StatefulWidget {
   RewardsPages({@required this.currentUserID});
 
   @override
-  _RewardsPagesState createState() => _RewardsPagesState(currentUserID: currentUserID);
+  _RewardsPagesState createState() =>
+      _RewardsPagesState(currentUserID: currentUserID);
 }
 
 class _RewardsPagesState extends State<RewardsPages> {

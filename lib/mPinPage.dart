@@ -1,7 +1,9 @@
 
 
 
+
 import 'dart:convert';
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_app/HomePage.dart';
@@ -17,18 +19,12 @@ import 'package:http/http.dart' as http;
 
 SharedPreferences preferences;
 String id = "";
-var pin ;
+var pin;
 String myPass;
-void readData() async{
-
+void readData() async {
   preferences = await SharedPreferences.getInstance();
   id = preferences.getString("id");
 }
-
-
-
-
-
 
 class PassCodeScreen extends StatefulWidget {
   String currentUserID;
@@ -58,7 +54,7 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
     super.initState();
     getPin();
   }
-  bool isFingerprint = false;
+
 
   Future<Null> getPin() async{
     var url =
@@ -75,6 +71,9 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
     print("****************************************");
   }
  var message;
+
+  bool isFingerprint = false;
+
 
   Future<Null> biometrics() async {
     final LocalAuthentication auth = new LocalAuthentication();
@@ -98,8 +97,7 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-     //myPass = ['1','2','3','4'];
+    //myPass = ['1','2','3','4'];
 
     return LockScreen(
         title: "Security Pin ",
@@ -117,6 +115,7 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         passCodeVerify: (passcode) async {
 
 
+
                 for (int i = 0; i < message.length; i++) {
                   if (passcode[i] != message[i]) {
                     return false;
@@ -124,51 +123,38 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
                 }
 
 
+          Firestore.instance
+              .collection('users')
+              .document(id)
+              .get()
+              .then((DocumentSnapshot) {
+            //myPass = (DocumentSnapshot.data['pin'].toString());
+
+            for (int i = 0; i < myPass.length; i++) {
+              if (passcode[i] != myPass[i]) {
+                return false;
+              }
+            }
+          });
+
+
           return true;
         },
         onSuccess: () {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
+
                 return HomePage(currentUserID: '987654321',);
               }));
+
+            return HomeScreen(
+              currentUserId: currentUserID,
+            );
+          }));
+
         });
   }
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //import 'package:finance_app/HomePage.dart';
 //import 'package:flutter/material.dart';
@@ -230,11 +216,8 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
 ////
 ////}
 
-
-
 // import 'package:flutter/material.dart';
 // import 'Fingerprint.dart';
-
 
 // class MPinPage extends StatefulWidget {
 //   @override
@@ -242,7 +225,6 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
 // }
 // String output = '';
 // class _MPinPageState extends State<MPinPage> {
-
 
 //   _appendToOutput(value) {
 //     if (this.mounted) {

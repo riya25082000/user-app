@@ -54,14 +54,14 @@ class _LoginPageState extends State<LoginPage> {
       }),
     );
     var message = jsonDecode(response.body);
-    if (message == "Login Matched") {
+    if (message != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('email', email);
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => HomePage(
-                    currentUserID: currentUserID,
+                    currentUserID: message.toString(),
                   )));
     } else {
       print(message);

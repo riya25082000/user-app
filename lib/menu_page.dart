@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Support/Support.dart';
 import 'Learning/LearningHomePage.dart';
+import 'changePassword.dart';
 import 'components/dual_button_tiles.dart';
 import 'package:finance_app/UserProfile.dart';
 import 'contact_us.dart';
@@ -161,7 +162,9 @@ class _menuPageState extends State<menuPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => NewsLetter()));
+                          builder: (BuildContext context) => NewsLetter(
+                                currentUserID: currentUserID,
+                              )));
                 },
                 width: tileWidth,
                 icon: Icons.library_books),
@@ -182,6 +185,18 @@ class _menuPageState extends State<menuPage> {
                 },
                 width: tileWidth,
                 icon: Icons.call),
+            ProfileButtons(
+                title: 'Change Password',
+                onPress: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => ChangePassword(
+                                currentUserID: currentUserID,
+                              )));
+                },
+                width: tileWidth,
+                icon: Icons.change_history),
             ProfileButtons(
                 title: 'Sign Out',
                 onPress: () async {

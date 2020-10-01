@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import '../erroralert.dart';
 
 class showQuestion extends StatefulWidget {
   String currentUserID;
@@ -16,26 +20,36 @@ class _showQuestionState extends State<showQuestion> {
   List ques = [];
   bool _loading;
   void getQues() async {
-    print(widget.suid.toString());
-    setState(() {
-      _loading = true;
-    });
-    var url =
-        'http://sanjayagarwal.in/Finance App/UserApp/Support/SupportQuestion.php';
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-        'sid': widget.suid.toString(),
-      }),
-    );
-    var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
-    setState(() {
-      ques = message;
-      _loading = false;
-    });
+    try {
+      print(widget.suid.toString());
+      setState(() {
+        _loading = true;
+      });
+      var url =
+          'http://sanjayagarwal.in/Finance App/UserApp/Support/SupportQuestion.php';
+      final response = await http
+          .post(
+            url,
+            body: jsonEncode(<String, String>{
+              'sid': widget.suid.toString(),
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message = await jsonDecode(response.body);
+      print("****************************************");
+      print(message);
+      print("****************************************");
+      setState(() {
+        ques = message;
+        _loading = false;
+      });
+    } on TimeoutException catch (e) {
+      alerttimeout(context, currentUserID);
+    } on Error catch (e) {
+      alerterror(context, currentUserID);
+    } on SocketException catch (e) {
+      alertinternet(context, currentUserID);
+    }
   }
 
   @override

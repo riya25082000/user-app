@@ -1,8 +1,10 @@
-import 'package:finance_app/Learning/LearningHomePage.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../erroralert.dart';
 import 'showQuestions.dart';
+import 'dart:async';
+import 'dart:io';
 
 class Support extends StatefulWidget {
   String currentUserID;
@@ -19,25 +21,35 @@ class _SupportState extends State<Support> {
   bool _loading;
 
   void getCategory() async {
-    setState(() {
-      _loading = true;
-    });
-    var url2 =
-        'http://sanjayagarwal.in/Finance App/UserApp/Support/SupportCategory.php';
-    final response2 = await http.post(
-      url2,
-      body: jsonEncode(<String, String>{
-        "UserID": currentUserID,
-      }),
-    );
-    var message2 = await jsonDecode(response2.body);
-    print("****************************************");
-    print(message2);
-    print("****************************************");
-    setState(() {
-      supcategory = message2;
-      _loading = false;
-    });
+    try {
+      setState(() {
+        _loading = true;
+      });
+      var url2 =
+          'http://sanjayagarwal.in/Finance App/UserApp/Support/SupportCategory.php';
+      final response2 = await http
+          .post(
+            url2,
+            body: jsonEncode(<String, String>{
+              "UserID": currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message2 = await jsonDecode(response2.body);
+      print("****************************************");
+      print(message2);
+      print("****************************************");
+      setState(() {
+        supcategory = message2;
+        _loading = false;
+      });
+    } on TimeoutException catch (e) {
+      alerttimeout(context, currentUserID);
+    } on Error catch (e) {
+      alerterror(context, currentUserID);
+    } on SocketException catch (e) {
+      alertinternet(context, currentUserID);
+    }
   }
 
   @override

@@ -1,7 +1,11 @@
 import 'dart:math';
+import 'dart:async';
+import 'dart:io';
+import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/Income_Expenses/addincome.dart';
 import 'package:finance_app/Income_Expenses/modifyIE.dart';
 import 'package:finance_app/Income_Expenses/widgetcode.dart';
+import 'package:finance_app/erroralert.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -59,6 +63,7 @@ class _income2State extends State<income2> {
   }
 
   void getIncome() async {
+
     setState(() {
       _loading = true;
     });
@@ -144,6 +149,121 @@ class _income2State extends State<income2> {
       e = message4;
       _loading = false;
     });
+
+    try {
+      setState(() {
+        _loading = true;
+      });
+      var url2 =
+          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeSum.php';
+      final response2 = await http
+          .post(
+            url2,
+            body: jsonEncode(<String, String>{
+              "UserID": widget.currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message2 = jsonDecode(response2.body);
+      totalincome = int.parse(message2[0]["sum(Amount)"]);
+      var url3 =
+          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseSum.php';
+      final response3 = await http
+          .post(
+            url3,
+            body: jsonEncode(<String, String>{
+              "UserID": widget.currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message3 = jsonDecode(response3.body);
+      totalexpense = int.parse(message3[0]["sum(Amount)"]);
+      savings = totalincome - totalexpense;
+      calculatePotential(dropdown, rate, time);
+      var url =
+          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeDetails.php';
+      final response = await http
+          .post(
+            url,
+            body: jsonEncode(<String, String>{
+              "UserID": currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message1 = await jsonDecode(response.body);
+      print("****************************************");
+      print(message1);
+      print("****************************************");
+      setState(() {
+        i = message1;
+        _loading = false;
+      });
+    } on TimeoutException catch (e) {
+      alerttimeout(context, currentUserID);
+    } on Error catch (e) {
+      alerterror(context, currentUserID);
+    } on SocketException catch (e) {
+      alertinternet(context, currentUserID);
+    }
+  }
+
+  void getExpense() async {
+    try {
+      setState(() {
+        _loading = true;
+      });
+      var url2 =
+          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeSum.php';
+      final response2 = await http
+          .post(
+            url2,
+            body: jsonEncode(<String, String>{
+              "UserID": widget.currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message2 = jsonDecode(response2.body);
+      totalincome = int.parse(message2[0]["sum(Amount)"]);
+      var url3 =
+          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseSum.php';
+      final response3 = await http
+          .post(
+            url3,
+            body: jsonEncode(<String, String>{
+              "UserID": widget.currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message3 = jsonDecode(response3.body);
+      totalexpense = int.parse(message3[0]["sum(Amount)"]);
+      savings = totalincome - totalexpense;
+      calculatePotential(dropdown, rate, time);
+      var url =
+          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseDetails.php';
+      final response = await http
+          .post(
+            url,
+            body: jsonEncode(<String, String>{
+              "UserID": currentUserID,
+            }),
+          )
+          .timeout(Duration(seconds: 30));
+      var message4 = await jsonDecode(response.body);
+      print("****************************************");
+      print(message4);
+      print("****************************************");
+      setState(() {
+        e = message4;
+        _loading = false;
+      });
+    } on TimeoutException catch (e) {
+      alerttimeout(context, currentUserID);
+    } on Error catch (e) {
+      alerterror(context, currentUserID);
+    } on SocketException catch (e) {
+      alertinternet(context, currentUserID);
+    }
+
   }
 
   @override
