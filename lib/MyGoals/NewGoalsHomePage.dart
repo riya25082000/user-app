@@ -56,19 +56,11 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
     try {
       final response = await http
           .post(
-
-        url,
-        body: jsonEncode(<String, String>{
-          "UserID": currentUserID,
-        }),
-      )
-
             url,
             body: jsonEncode(<String, String>{
               "UserID": currentUserID,
             }),
           )
-
           .timeout(const Duration(seconds: 30));
       var message = await jsonDecode(response.body);
       print("****************************************");
@@ -126,7 +118,7 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
                     children: <Widget>[
                       Padding(
                         padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -156,7 +148,7 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
                                                 int.parse(
                                                     data[index]['GoalID']),
                                                 category[int.parse(
-                                                    data[index]['Type'])]
+                                                        data[index]['Type'])]
                                                     .id,
                                                 data[index]['Name'],
                                                 data[index]['Amount'],
@@ -202,64 +194,64 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
                         padding: EdgeInsets.all(10.0),
                         child: (width > 350)
                             ? Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Text(
-                                  "Achieve by: ",
-                                  style:
-                                  TextStyle(color: Color(0xff373D3F)),
-                                ),
-                                Text(data[index]['Year'],
-                                    style: TextStyle(
-                                        color: Color(0xff373D3F))),
-                              ],
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text("Target: ",
-                                    style: TextStyle(
-                                        color: Color(0xff373D3F))),
-                                Text(data[index]['Amount'],
-                                    style: TextStyle(
-                                        color: Color(0xff373D3F))),
-                              ],
-                            ),
-                          ],
-                        )
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        "Achieve by: ",
+                                        style:
+                                            TextStyle(color: Color(0xff373D3F)),
+                                      ),
+                                      Text(data[index]['Year'],
+                                          style: TextStyle(
+                                              color: Color(0xff373D3F))),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text("Target: ",
+                                          style: TextStyle(
+                                              color: Color(0xff373D3F))),
+                                      Text(data[index]['Amount'],
+                                          style: TextStyle(
+                                              color: Color(0xff373D3F))),
+                                    ],
+                                  ),
+                                ],
+                              )
                             : Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Text(
-                                  "Achieve by: ",
-                                  style:
-                                  TextStyle(color: Color(0xff373D3F)),
-                                ),
-                                Text(goal_info[index].year,
-                                    style: TextStyle(
-                                        color: Color(0xff373D3F))),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text("Target: ",
-                                    style: TextStyle(
-                                        color: Color(0xff373D3F))),
-                                Text(goal_info[index].value,
-                                    style: TextStyle(
-                                        color: Color(0xff373D3F))),
-                              ],
-                            ),
-                          ],
-                        ),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        "Achieve by: ",
+                                        style:
+                                            TextStyle(color: Color(0xff373D3F)),
+                                      ),
+                                      Text(goal_info[index].year,
+                                          style: TextStyle(
+                                              color: Color(0xff373D3F))),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Text("Target: ",
+                                          style: TextStyle(
+                                              color: Color(0xff373D3F))),
+                                      Text(goal_info[index].value,
+                                          style: TextStyle(
+                                              color: Color(0xff373D3F))),
+                                    ],
+                                  ),
+                                ],
+                              ),
                       )
                     ],
                   ),
@@ -302,8 +294,8 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) => AddGoals(
-                          currentUserID: currentUserID,
-                        )));
+                              currentUserID: currentUserID,
+                            )));
               },
               child: Text(' + Add '),
               color: Color(0xff63E2E0),
@@ -334,36 +326,36 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
       ),
       body: _loading
           ? Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
-          backgroundColor: Color(0xff63E2E0),
-        ),
-      )
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                backgroundColor: Color(0xff63E2E0),
+              ),
+            )
           : SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Center(
-                      child: Text(
-                        current == 0
-                            ? "Current Goals"
-                            : "Completed Goals",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Center(
+                            child: Text(
+                              current == 0
+                                  ? "Current Goals"
+                                  : "Completed Goals",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
+                  goalsoptions[current],
+                ],
+              ),
             ),
-            goalsoptions[current],
-          ],
-        ),
-      ),
     );
   }
 }

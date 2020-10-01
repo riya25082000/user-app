@@ -1,9 +1,4 @@
-
-
-
-
 import 'dart:convert';
-
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_app/HomePage.dart';
@@ -30,8 +25,6 @@ class PassCodeScreen extends StatefulWidget {
   String currentUserID;
   PassCodeScreen({@required this.currentUserID});
 
-
-
   @override
   _PassCodeScreenState createState() => new _PassCodeScreenState();
 }
@@ -55,25 +48,23 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
     getPin();
   }
 
-
-  Future<Null> getPin() async{
-    var url =
-        'http://sanjayagarwal.in/Finance App/MpinDetail.php';
+  Future<Null> getPin() async {
+    var url = 'http://sanjayagarwal.in/Finance App/MpinDetail.php';
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
         "UserID": currentUserID,
       }),
     );
-     message= await jsonDecode(response.body);
+    message = await jsonDecode(response.body);
     print("****************************************");
     print(message);
     print("****************************************");
   }
- var message;
+
+  var message;
 
   bool isFingerprint = false;
-
 
   Future<Null> biometrics() async {
     final LocalAuthentication auth = new LocalAuthentication();
@@ -113,15 +104,11 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         wrongPassTitle: "Opps!",
         wrongPassCancelButtonText: "Cancel",
         passCodeVerify: (passcode) async {
-
-
-
-                for (int i = 0; i < message.length; i++) {
-                  if (passcode[i] != message[i]) {
-                    return false;
-                  }
-                }
-
+          for (int i = 0; i < message.length; i++) {
+            if (passcode[i] != message[i]) {
+              return false;
+            }
+          }
 
           Firestore.instance
               .collection('users')
@@ -137,21 +124,19 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
             }
           });
 
-
           return true;
         },
         onSuccess: () {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
-
-                return HomePage(currentUserID: '987654321',);
-              }));
-
-            return HomeScreen(
-              currentUserId: currentUserID,
+            return HomePage(
+              currentUserID: '987654321',
             );
           }));
 
+          return HomeScreen(
+            currentUserId: currentUserID,
+          );
         });
   }
 }

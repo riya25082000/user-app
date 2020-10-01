@@ -17,13 +17,8 @@ Widget alertinternet(BuildContext context, String currentUserID) {
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => HomePage(
-
-                        currentUserID: currentUserID,
-                      )));
-
                             currentUserID: currentUserID,
                           )));
-
             },
             child: Text("Ok"),
           )
@@ -53,13 +48,8 @@ Widget alerttimeout(BuildContext context, String currentUserID) {
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => HomePage(
-
-                        currentUserID: currentUserID,
-                      )));
-
                             currentUserID: currentUserID,
                           )));
-
             },
             child: Text("Ok"),
           )
@@ -83,13 +73,8 @@ Widget alerterror(BuildContext context, String currentUserID) {
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => HomePage(
-
-                        currentUserID: currentUserID,
-                      )));
-
                             currentUserID: currentUserID,
                           )));
-
             },
             child: Text("Ok"),
           )
