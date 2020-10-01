@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  path_provider: ^1.6.11
   expansion_tile_card: ^1.1.0
   responsive_text_field: ^0.1.4
   flutter_plugin_pdf_viewer: ^1.0.7

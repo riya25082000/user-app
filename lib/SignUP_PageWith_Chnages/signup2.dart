@@ -206,6 +206,8 @@ class _SignUpState extends State<SignUp> {
 
   String otp = "";
 
+
+
   void toggleMobile() {
     if (confirmMobile == false) {
       setState(() {

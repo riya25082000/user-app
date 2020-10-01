@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:finance_app/HomePage/homepage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +18,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
   String currentUserID;
   var val;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool _isHidden = true;
+
+  get handleTimeout => handleTimeOut();
+
+  void handleTimeOut(){
+
+
+
+
+
+}
 
   void _toggleVisibility() {
     setState(() {
@@ -31,7 +44,8 @@ class _LoginPageState extends State<LoginPage> {
   Future userLogin() async {
     String email = emailController.text;
     String password = passwordController.text;
-    var url = 'http://sanjayagarwal.in/Finance App/signinAdvisor.php';
+
+    var url = 'http://sanjayagarwal.in/Finance App/signin2.php';
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
@@ -52,6 +66,13 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       print(message);
     }
+  }
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //_initialiseTimer();
   }
 
   final _formKey2 = GlobalKey<FormState>();
@@ -198,11 +219,13 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        SignUp()));
+
+
+                            // Navigator.pushReplacement(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (BuildContext context) =>
+                            //             SignUp()));
                           },
                           child: Text(
                             'Sign Up',
@@ -274,4 +297,10 @@ class _LoginPageState extends State<LoginPage> {
       }),
     );
   }
+
+
+
+
+
+
 }

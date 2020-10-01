@@ -33,9 +33,9 @@ class _income2State extends State<income2> {
           <String, String>{"UserID": currentUserID, "IncomeID": incomeID}),
     );
     var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
+    // print("****************************************");
+    // print(message);
+    // print("****************************************");
     if (message == "Successfully Deleted") {
       getIncome();
     } else {
@@ -52,9 +52,9 @@ class _income2State extends State<income2> {
           <String, String>{"UserID": currentUserID, "ExpenseID": expenseID}),
     );
     var message = await jsonDecode(response.body);
-    print("****************************************");
-    print(message);
-    print("****************************************");
+    // print("****************************************");
+    // print(message);
+    // print("****************************************");
     if (message == "Successfully Deleted") {
       getExpense();
     } else {
@@ -63,6 +63,93 @@ class _income2State extends State<income2> {
   }
 
   void getIncome() async {
+
+    setState(() {
+      _loading = true;
+    });
+    var url2 =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeSum.php';
+    final response2 = await http.post(
+      url2,
+      body: jsonEncode(<String, String>{
+        "UserID": widget.currentUserID,
+      }),
+    );
+    var message2 = jsonDecode(response2.body);
+    totalincome = int.parse(message2[0]["sum(Amount)"]);
+    var url3 =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseSum.php';
+    final response3 = await http.post(
+      url3,
+      body: jsonEncode(<String, String>{
+        "UserID": widget.currentUserID,
+      }),
+    );
+    var message3 = jsonDecode(response3.body);
+    totalexpense = int.parse(message3[0]["sum(Amount)"]);
+    savings = totalincome - totalexpense;
+    calculatePotential(dropdown, rate, time);
+    var url =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeDetails.php';
+    final response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        "UserID": currentUserID,
+      }),
+    );
+    var message1 = await jsonDecode(response.body);
+    // print("****************************************");
+    // print(message1);
+    // print("****************************************");
+    setState(() {
+      i = message1;
+      _loading = false;
+    });
+  }
+
+  void getExpense() async {
+    setState(() {
+      _loading = true;
+    });
+    var url2 =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeSum.php';
+    final response2 = await http.post(
+      url2,
+      body: jsonEncode(<String, String>{
+        "UserID": widget.currentUserID,
+      }),
+    );
+    var message2 = jsonDecode(response2.body);
+    totalincome = int.parse(message2[0]["sum(Amount)"]);
+    var url3 =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseSum.php';
+    final response3 = await http.post(
+      url3,
+      body: jsonEncode(<String, String>{
+        "UserID": widget.currentUserID,
+      }),
+    );
+    var message3 = jsonDecode(response3.body);
+    totalexpense = int.parse(message3[0]["sum(Amount)"]);
+    savings = totalincome - totalexpense;
+    calculatePotential(dropdown, rate, time);
+    var url =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseDetails.php';
+    final response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        "UserID": currentUserID,
+      }),
+    );
+    var message4 = await jsonDecode(response.body);
+    print("****************************************");
+    print(message4 + "message");
+    print("****************************************");
+    setState(() {
+      e = message4;
+      _loading = false;
+    });
+
     try {
       setState(() {
         _loading = true;
@@ -176,6 +263,7 @@ class _income2State extends State<income2> {
     } on SocketException catch (e) {
       alertinternet(context, currentUserID);
     }
+
   }
 
   @override

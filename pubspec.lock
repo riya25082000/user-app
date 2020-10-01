@@ -437,7 +437,7 @@ packages:
     source: hosted
     version: "0.1.4"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
@@ -484,7 +484,11 @@ packages:
       name: percent_indicator
       url: "https://pub.dartlang.org"
     source: hosted
+
+    version: "2.1.7+3"
+
     version: "2.1.7+4"
+
   petitparser:
     dependency: transitive
     description:

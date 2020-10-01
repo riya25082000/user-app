@@ -1,5 +1,6 @@
 
 import 'package:finance_app/HomePage.dart';
+import 'package:finance_app/HomePage/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -25,7 +26,7 @@ class TouchScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => HomeScreen(currentUserId: currentUserID,),
+                  builder: (context) => HomePage(currentUserID: '987654321'),
                 ),
               );
             }

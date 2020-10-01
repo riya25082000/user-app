@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:finance_app/SignUP_PageWith_Chnages/SignIn_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../NotificationPage.dart';
 import '../menu_page.dart';
 
@@ -11,6 +15,58 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final String currentUserID;
+  Timer _timer;
+
+  FlutterLocalNotificationsPlugin fltrNotification;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initialiseTimer();
+    var androidInitilize = new AndroidInitializationSettings('app_icon');
+    var iOSinitilize = new IOSInitializationSettings();
+    var initilizationsSettings =
+    new InitializationSettings(androidInitilize, iOSinitilize);
+    fltrNotification = new FlutterLocalNotificationsPlugin();
+    fltrNotification.initialize(initilizationsSettings,
+        onSelectNotification: notificationSelected);
+  }
+
+
+  Future notificationSelected(String payload) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text("Notification : $payload"),
+      ),
+    );
+  }
+
+  void _handleUserInteraction([_]) {
+    if (!_timer.isActive) {
+      // This means the user has been logged out
+      return;
+    }
+
+    _timer.cancel();
+    _initialiseTimer();
+  }
+
+
+  void _initialiseTimer() {
+    _timer = Timer.periodic(const Duration(minutes:1), (_) => logoutUser);
+  }
+
+  void logoutUser(){
+
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) =>
+                LoginPage()));
+    _timer.cancel();
+  }
   _HomePageState({@required this.currentUserID});
   @override
   Widget build(BuildContext context) {
@@ -45,6 +101,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     Row(
+
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
@@ -54,6 +111,11 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold,
                             color: Color(0xff373D3F),
                           ),
+                        ),
+                        GestureDetector(
+                          onTap: _handleUserInteraction,
+                          onPanDown: _handleUserInteraction,
+                          onScaleStart: _handleUserInteraction,
                         ),
                         IconButton(
                           iconSize: 40,
