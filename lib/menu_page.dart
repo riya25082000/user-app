@@ -1,6 +1,7 @@
 import 'package:finance_app/Income_Expenses/income2.dart';
 import 'package:finance_app/MyGoals/NewGoalsHomePage.dart';
 import 'package:finance_app/NewsLetter/NewsLetter.dart';
+import 'package:finance_app/Reward.dart';
 import 'package:finance_app/newRefer.dart';
 import 'package:finance_app/newadvisor.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
@@ -136,8 +137,8 @@ class _menuPageState extends State<menuPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => RewardandRefer(
-                                currentUserID: currentUserID,
+                          builder: (BuildContext context) => RewardPage(
+
                               )));
                 },
                 width: tileWidth,

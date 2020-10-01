@@ -3,6 +3,7 @@ import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -41,7 +43,7 @@ class _SignUpState extends State<SignUp> {
   final _emailController = TextEditingController();
   var _isProcessing;
 
-  Future<void> emailVerification() async{
+  Future<void> emailVerification() async {
     String email = _emailController.text;
     String password = _passwordController.text;
     String phone = _phoneController.text;
@@ -56,29 +58,27 @@ class _SignUpState extends State<SignUp> {
         "Email": email,
         "UserID": currentUserID,
         "Password": password,
-        "Name":name,
+        "Name": name,
         "Phone": phone
       }),
     );
     if (response.body.isNotEmpty) {
       var message = jsonDecode(response.body);
-      if (message["message"] == "Successful Signup" && message[0]['OTP']==otp) {
+      if (message["message"] == "Successful Signup" &&
+          message[0]['OTP'] == otp) {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    HomePage(
+                builder: (context) => HomePage(
                       currentUserID: currentUserID,
                     )));
-      }
-      else {
+      } else {
         print("****************************************************");
         print(message["message"]);
         print("****************************************************");
       }
     }
   }
-
 
   Future userSignup() async {
     String email = _emailController.text;
@@ -284,7 +284,8 @@ class _SignUpState extends State<SignUp> {
               ],
             ));
   }
-String otp = "";
+
+  String otp = "";
   void toggleMobile() {
     if (confirmMobile == false) {
       setState(() {
@@ -482,6 +483,10 @@ String otp = "";
                           controller: _phoneController,
                           keyboardType: TextInputType.number,
                           decoration: textfield("Phone Number"),
+                          inputFormatters: <TextInputFormatter>[
+                            WhitelistingTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(10),
+                          ],
                           validator: (String value) {
                             if (value.isEmpty) {
                               return 'Please enter a PhoneNumber';
@@ -494,6 +499,7 @@ String otp = "";
                         ),
                         TextFormField(
                           controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: textfield("Email (Optional)"),
                           validator: (String value) {
                             if (value.isEmpty) {
@@ -510,9 +516,11 @@ String otp = "";
                           onSaved: (value) {
                             _authData['email'] = value;
                             String email = value;
-                            print("****************************************************");
+                            print(
+                                "****************************************************");
                             print(email);
-                            print("****************************************************");
+                            print(
+                                "****************************************************");
                           },
                         ),
                         SizedBox(

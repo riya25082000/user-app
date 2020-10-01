@@ -31,10 +31,12 @@ Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var email = prefs.getString('email');
   runApp(MaterialApp(
-    home: email == null
-        ? LoginPage()
-        : SetPin(
-            currentUserID: '987654321',
-          ),
+    home: LoginPage()
+    // email == null
+    //     ? LoginPage()
+    //     :
+    //      HomePage(
+    //         currentUserID: '987654321',
+    //       ),
   ));
 }
