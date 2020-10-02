@@ -94,10 +94,100 @@ class _RewardandReferState extends State<RewardandRefer> {
     }
   }
 
+  int total = 0;
+  void SumBonus() async {
+    var url3 =
+        'http://sanjayagarwal.in/Finance App/UserApp/Rewards/RewardTotal.php';
+    final response3 = await http.post(
+      url3,
+      body: jsonEncode(<String, String>{
+        "UserID": currentUserID,
+      }),
+    );
+    var message3 = jsonDecode(response3.body);
+    setState(() {
+      total = int.parse(message3[0]["sum(rpoints)"]);
+    });
+  }
+
+  TextEditingController coder = TextEditingController();
+  int pointer = 0;
+  void RewardRedeem() async {
+    try {
+      DateTime d = DateTime.now();
+      var url3 =
+          'http://sanjayagarwal.in/Finance App/UserApp/Rewards/RewardRedeem.php';
+      final response3 = await http.post(
+        url3,
+        body: jsonEncode(<String, String>{
+          "RewardCode": coder.text,
+        }),
+      );
+      var message3 = jsonDecode(response3.body);
+      setState(() {
+        pointer = int.parse(message3[0]["RewardPoints"]);
+      });
+      var url =
+          'http://sanjayagarwal.in/Finance App/UserApp/Rewards/GetReward.php';
+      print("****************************************************");
+      print("$currentUserID ** ${coder.text} ** $pointer ** ${d.toString()} ");
+      print("****************************************************");
+      final response1 = await http.post(
+        url,
+        body: jsonEncode(<String, String>{
+          "UserID": currentUserID,
+          "rcode": coder.text,
+          "rpoints": pointer.toString(),
+          "Date": d.toString(),
+        }),
+      );
+      var message1 = jsonDecode(response1.body);
+      if (message1 == "Successful Insertion") {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => RewardandRefer(
+                      currentUserID: currentUserID,
+                    )));
+      } else {
+        print(message1);
+      }
+    } on TimeoutException catch (e) {
+      alerttimeout(context, currentUserID);
+    } on Error catch (e) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Invalid Reward Code"),
+            content:
+                Text("The code you have entered is invalid or doesn't exist."),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => RewardandRefer(
+                                currentUserID: currentUserID,
+                              )));
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
+    } on SocketException catch (e) {
+      alertinternet(context, currentUserID);
+    }
+  }
+
   @override
   void initState() {
     getReferData();
     getRewardHistory();
+    SumBonus();
     // TODO: implement initState
     super.initState();
   }
@@ -169,6 +259,12 @@ class _RewardandReferState extends State<RewardandRefer> {
                         ),
                         SizedBox(
                           height: 8,
+                        ),
+                        Row(
+                          children: [
+                            Text('Total Reward Points: '),
+                            Text(total.toString()),
+                          ],
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 16, bottom: 24),
@@ -314,6 +410,7 @@ class _RewardandReferState extends State<RewardandRefer> {
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  controller: coder,
                                   decoration: InputDecoration(
                                     alignLabelWithHint: true,
                                     hintText: 'Have a code?',
@@ -345,7 +442,9 @@ class _RewardandReferState extends State<RewardandRefer> {
                                       color: Color(0xff373D3F),
                                       fontSize: height * 0.02),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  RewardRedeem();
+                                },
                               ),
                             ],
                           ),
