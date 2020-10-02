@@ -1,299 +1,147 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finance_app/HomePage/homepage.dart';
-import 'package:finance_app/authentication.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:string_validator/string_validator.dart' as st_validator;
-import 'Widgets.dart';
-import 'Working_signin.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:provider/provider.dart';
+import 'package:finance_app/HomePage/homepage.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:otp_text_field/otp_field.dart';
+import 'package:otp_text_field/style.dart';
+import 'Widgets.dart';
 
-class SignUp extends StatefulWidget {
+class Signup extends StatefulWidget {
   @override
-  _SignUpState createState() => _SignUpState();
+  _SignupState createState() => _SignupState();
 }
 
-class _SignUpState extends State<SignUp> {
-  var val;
+class _SignupState extends State<Signup> {
   String currentUserID;
-  static final userNameRegExp = RegExp(r'^[A-Za-z0-9_.-]+$');
-
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  SharedPreferences preferences;
-
-  bool isLoggedIn = false;
-  bool isLoading = false;
-
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _codeController = TextEditingController();
-  final _emailController = TextEditingController();
-  var _isProcessing;
-
-  Future<void> emailVerification() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String phone = _phoneController.text;
-    String name = _usernameController.text;
+  int otp;
+  Future<void> SignUpUser() async {
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserSignUp.php';
-    print("****************************************************");
-    print(email);
-    print("****************************************************");
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
-        "Email": email,
-        "Password": password,
-        "Name": name,
-        "Phone": phone
-      }),
-    );
-    if (response.body.isNotEmpty) {
-      var message = jsonDecode(response.body);
-      if (message["message"] == "Successful Signup" &&
-          message[0]['OTP'] == otp) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(
-                      currentUserID: currentUserID,
-                    )));
-      } else {
-        print("****************************************************");
-        print(message["message"]);
-        print("****************************************************");
-      }
-    }
-  }
-
-  Future userSignup() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String phone = _phoneController.text;
-    String name = _usernameController.text;
-    var url = 'http://sanjayagarwal.in/Finance App/signup.php';
-    print("****************************************************");
-    print("$email,$password,$phone,$name");
-    print("****************************************************");
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-        "email": email,
-        "password": password,
-        "name": name,
-        "phone": phone
+        "Name": nameController.text,
+        "Email": emailController.text,
+        "Phone": phoneController.text,
+        "Password": passwordController.text,
       }),
     );
     var message = jsonDecode(response.body);
-    if (message["message"] == "Successful Signup") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    currentUserID: currentUserID,
-                  )));
+    print("***********");
+    print(message);
+    if (message != null) {
+      setState(() {
+        currentUserID = message.toString();
+        AddUserPassword(currentUserID);
+      });
     } else {
-      print(message["message"]);
+      print(message);
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _isProcessing = false;
-
-    isSignedIn();
-  }
-
-  void isSignedIn() async {
-    this.setState(() {
-      isLoggedIn = true;
-    });
-
-    preferences = await SharedPreferences.getInstance();
-
-    isLoggedIn = await googleSignIn.isSignedIn();
-
-    if (isLoggedIn) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(currentUserID: currentUserID)));
-    }
-    this.setState(() {
-      isLoading = false;
-    });
-  }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  final _formKey = GlobalKey<FormState>();
-  bool confirmMobile = false;
-
-  void checkMobileOTP(String otp) {
-    setState(() {
-      confirmMobile = true;
-    });
-  }
-
-  bool _isHidden = true;
-
-  void _toggleVisibility() {
-    setState(() {
-      _isHidden = !_isHidden;
-    });
-  }
-
-  bool _isHidden2 = true;
-
-  void _toggleVisibility2() {
-    setState(() {
-      _isHidden2 = !_isHidden2;
-    });
-  }
-
-  Map<String, String> _authData = {'email': '', 'password': ''};
-
-  Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-    _formKey.currentState.save();
-    try {
-      await Provider.of<Authentication>(context, listen: false)
-          .signUp(_authData['email'], _authData['password']);
-    } catch (error) {
-      var errorMessage = 'Authentication Failed. Please try again';
-      _showErrorDailog(errorMessage);
-    }
-  }
-
-  void _showErrorDailog(String msg) {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('An Error Occurred'),
-              content: Text(msg),
+  Future<void> AddUserPassword(String currentid) async {
+    var url =
+        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/VerifyUser.php';
+    final response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        "UserID": currentid,
+        "Email": emailController.text,
+        "Mobile": phoneController.text,
+        "Password": passwordController.text,
+      }),
+    );
+    var message = jsonDecode(response.body);
+    print("***********");
+    print(message);
+    if (message != null) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              title: Center(
+                child: Text(
+                  'Enter the OTP for Email Verification',
+                  style: TextStyle(
+                    color: Color(0xff373D3F),
+                  ),
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  OTPTextField(
+                    length: 6,
+                    width: MediaQuery.of(context).size.width,
+                    fieldWidth: 16,
+                    style: TextStyle(fontSize: 14),
+                    textFieldAlignment: MainAxisAlignment.spaceAround,
+                    fieldStyle: FieldStyle.underline,
+                    onCompleted: (pin) {
+                      print("Completed: " + pin);
+                      otp = int.parse(pin);
+                    },
+                  ),
+                ],
+              ),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Okay'),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                )
-              ],
-            ));
-  }
-
-  String otp = "";
-
-  void toggleMobile() {
-    if (confirmMobile == false) {
-      setState(() {
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                title: Center(
+                  color: Color(0xff63E2E0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                   child: Text(
-                    'Enter the OTP for Email Verification',
+                    'Verify',
                     style: TextStyle(
                       color: Color(0xff373D3F),
                     ),
                   ),
+                  onPressed: () {
+                    UserDetailsAdd(currentid);
+                  },
                 ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    OTPTextField(
-                      length: 6,
-                      width: MediaQuery.of(context).size.width,
-                      fieldWidth: 16,
-                      style: TextStyle(fontSize: 14),
-                      textFieldAlignment: MainAxisAlignment.spaceAround,
-                      fieldStyle: FieldStyle.underline,
-                      onCompleted: (pin) {
-                        print("Completed: " + pin);
-                        otp = pin;
-                      },
-                    ),
-                  ],
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    color: Color(0xff63E2E0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      'Resend OTP',
-                      style: TextStyle(
-                        color: Color(0xff373D3F),
-                      ),
-                    ),
-                    onPressed: () {
-                      emailVerification();
-                    },
-                  ),
-                  FlatButton(
-                    color: Color(0xff63E2E0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      'Verify',
-                      style: TextStyle(
-                        color: Color(0xff373D3F),
-                      ),
-                    ),
-                    onPressed: () {
-                      checkMobileOTP('otp');
-                    },
-                  ),
-                  FlatButton(
-                    color: Color(0xff63E2E0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      'Close',
-                      style: TextStyle(
-                        color: Color(0xff373D3F),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              );
-            });
-      });
+              ],
+            );
+          });
     } else {
-      setState(() {
-        checked = false;
-      });
+      print(message);
+    }
+  }
+
+  Future UserDetailsAdd(String cid) async {
+    var url =
+        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserDetailsAdd.php';
+    print("****************************************************");
+    print("");
+    print("****************************************************");
+    final response1 = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        'UserID': currentUserID,
+        'Name': nameController.text,
+        'Email': emailController.text,
+        'Mobile': phoneController.text,
+      }),
+    );
+    var message1 = jsonDecode(response1.body);
+    print(message1);
+    if (message1 == "Successful Insertion") {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    currentUserID: cid,
+                  )));
+    } else {
+      print(message1);
     }
   }
 
@@ -346,6 +194,27 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  bool _isHidden = true;
+
+  void _toggleVisibility() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
+  }
+
+  bool _isHidden2 = true;
+  final formKey = GlobalKey<FormState>();
+
+  void _toggleVisibility2() {
+    setState(() {
+      _isHidden2 = !_isHidden2;
+    });
+  }
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -376,77 +245,38 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   Form(
-                    key: _formKey,
+                    key: formKey,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
                           decoration: textfield("Name"),
-                          controller: _usernameController,
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Please enter a username';
-                            }
-                            if (!userNameRegExp.hasMatch(value)) {
-                              return 'Only Alphanumerics, underscore or period, allowed';
-                            }
-                            if (value[0] == value[0].toUpperCase()) {
-                              return 'First letter should not be uppercase in username';
-                            }
-                            return null;
-                          },
+                          controller: nameController,
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         TextFormField(
-                          controller: _phoneController,
+                          controller: phoneController,
                           keyboardType: TextInputType.number,
                           decoration: textfield("Phone Number"),
                           inputFormatters: <TextInputFormatter>[
                             WhitelistingTextInputFormatter.digitsOnly,
                             LengthLimitingTextInputFormatter(10),
                           ],
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Please enter a PhoneNumber';
-                            }
-                            return null;
-                          },
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         TextFormField(
-                          controller: _emailController,
+                          controller: emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: textfield("Email (Optional)"),
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Please enter an email address';
-                            }
-                            if (st_validator.isEmail(value)) {
-                              return 'Enter a valid email address';
-                            }
-                            if (value.split('@').length != 2) {
-                              return 'Enter a valid email address';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _authData['email'] = value;
-                            String email = value;
-                            print(
-                                "****************************************************");
-                            print(email);
-                            print(
-                                "****************************************************");
-                          },
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         TextFormField(
-                          controller: _passwordController,
+                          controller: passwordController,
                           obscureText: _isHidden,
                           decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
@@ -466,19 +296,6 @@ class _SignUpState extends State<SignUp> {
                                 onPressed: _toggleVisibility,
                                 icon: Icon(Icons.visibility_off),
                               )),
-                          validator: (String value) {
-                            val = value;
-                            if (value.isEmpty) {
-                              return 'Please enter a password';
-                            }
-                            if (value.length < 8) {
-                              return 'Password must be greater than 8 alphabets';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _authData['password'] = value;
-                          },
                         ),
                         SizedBox(
                           height: 15,
@@ -504,12 +321,6 @@ class _SignUpState extends State<SignUp> {
                               icon: Icon(Icons.visibility_off),
                             ),
                           ),
-                          validator: (String value) {
-                            if (val != value) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
                         ),
                       ],
                     ),
@@ -519,14 +330,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      userSignup();
-                      if (_emailController.text.isNotEmpty) {
-                        toggleMobile();
-                      }
-//                         setState(() {
-//                           toggleMobile();
-//                           if (_formKey.currentState.validate()) ;
-//                         });
+                      SignUpUser();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
