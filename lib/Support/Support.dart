@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../erroralert.dart';
+import '../userInfo.dart';
 import 'showQuestions.dart';
 import 'dart:async';
 import 'dart:io';
@@ -37,7 +39,7 @@ class _SupportState extends State<Support> {
           .timeout(Duration(seconds: 30));
       var message2 = await jsonDecode(response2.body);
       print("****************************************");
-      print(message2);
+      print(message2 );
       print("****************************************");
       setState(() {
         supcategory = message2;
@@ -54,9 +56,9 @@ class _SupportState extends State<Support> {
 
   @override
   void initState() {
-    print("****************************************");
-    print(currentUserID);
-    print("****************************************");
+    // print("****************************************");
+    // print(currentUserID);
+    // print("****************************************");
     getCategory();
     // TODO: implement initState
     super.initState();
@@ -196,4 +198,7 @@ class _SupportState extends State<Support> {
             ),
     );
   }
+
+
 }
+
