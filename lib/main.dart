@@ -2,6 +2,8 @@ import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/Insurance/InsuranceHomePage.dart';
 import 'package:finance_app/LocalNotifications.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
+import 'package:finance_app/Support/Support.dart';
+import 'package:finance_app/Support/SupportSearch.dart';
 import 'package:finance_app/advisor.dart';
 import 'package:finance_app/contact_us.dart';
 import 'package:finance_app/setPin.dart';
@@ -31,12 +33,13 @@ Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var email = prefs.getString('email');
   runApp(MaterialApp(
-    home: LoginPage()
-    // email == null
-    //     ? LoginPage()
-    //     :
-    //      HomePage(
-    //         currentUserID: '987654321',
-    //       ),
+    home:
+    // LoginPage()
+    // // email == null
+    // //     ? LoginPage()
+    // //     :
+         SupportUserPage(
+            currentUserID: '987654321',
+          ),
   ));
 }

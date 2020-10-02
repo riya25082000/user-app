@@ -62,7 +62,9 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
   }
 
   var message;
+
   bool isFingerprint = false;
+
   Future<Null> biometrics() async {
     final LocalAuthentication auth = new LocalAuthentication();
     bool authenticated = false;
@@ -126,13 +128,20 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         onSuccess: () {
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
+
+               
+
+         
+
             return HomeScreen(
               currentUserId: currentUserID,
             );
           }));
+
         });
   }
 }
+
 
 //import 'package:finance_app/HomePage.dart';
 //import 'package:flutter/material.dart';
