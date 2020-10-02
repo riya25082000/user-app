@@ -41,73 +41,73 @@ class _SignUpState extends State<SignUp> {
   final _emailController = TextEditingController();
   var _isProcessing;
 
-  Future<void> emailVerification() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String phone = _phoneController.text;
-    String name = _usernameController.text;
-    var url =
-        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserSignUp.php';
-    print("****************************************************");
-    print(email);
-    print("****************************************************");
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-        "Email": email,
-        "Password": password,
-        "Name": name,
-        "Phone": phone
-      }),
-    );
-    if (response.body.isNotEmpty) {
-      var message = jsonDecode(response.body);
-      if (message["message"] == "Successful Signup" &&
-          message[0]['OTP'] == otp) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomePage(
-                      currentUserID: currentUserID,
-                    )));
-      } else {
-        print("****************************************************");
-        print(message["message"]);
-        print("****************************************************");
-      }
-    }
-  }
+  // Future<void> emailVerification() async {
+  //   String email = _emailController.text;
+  //   String password = _passwordController.text;
+  //   String phone = _phoneController.text;
+  //   String name = _usernameController.text;
+  //   var url =
+  //       'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserSignUp.php';
+  //   print("****************************************************");
+  //   print(email);
+  //   print("****************************************************");
+  //   final response = await http.post(
+  //     url,
+  //     body: jsonEncode(<String, String>{
+  //       "Email": email,
+  //       "Password": password,
+  //       "Name": name,
+  //       "Phone": phone
+  //     }),
+  //   );
+  //   if (response.body.isNotEmpty) {
+  //     var message = jsonDecode(response.body);
+  //     if (message["message"] == "Successful Signup" &&
+  //         message[0]['OTP'] == otp) {
+  //       Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //               builder: (context) => HomePage(
+  //                     currentUserID: currentUserID,
+  //                   )));
+  //     } else {
+  //       print("****************************************************");
+  //       print(message["message"]);
+  //       print("****************************************************");
+  //     }
+  //   }
+  // }
 
-  Future userSignup() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String phone = _phoneController.text;
-    String name = _usernameController.text;
-    var url = 'http://sanjayagarwal.in/Finance App/signup.php';
-    print("****************************************************");
-    print("$email,$password,$phone,$name");
-    print("****************************************************");
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-        "email": email,
-        "password": password,
-        "name": name,
-        "phone": phone
-      }),
-    );
-    var message = jsonDecode(response.body);
-    if (message["message"] == "Successful Signup") {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    currentUserID: currentUserID,
-                  )));
-    } else {
-      print(message["message"]);
-    }
-  }
+  // Future userSignup() async {
+  //   String email = _emailController.text;
+  //   String password = _passwordController.text;
+  //   String phone = _phoneController.text;
+  //   String name = _usernameController.text;
+  //   var url = 'http://sanjayagarwal.in/Finance App/signup.php';
+  //   print("****************************************************");
+  //   print("$email,$password,$phone,$name");
+  //   print("****************************************************");
+  //   final response = await http.post(
+  //     url,
+  //     body: jsonEncode(<String, String>{
+  //       "email": email,
+  //       "password": password,
+  //       "name": name,
+  //       "phone": phone
+  //     }),
+  //   );
+  //   var message = jsonDecode(response.body);
+  //   if (message["message"] == "Successful Signup") {
+  //     Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //             builder: (context) => HomePage(
+  //                   currentUserID: currentUserID,
+  //                 )));
+  //   } else {
+  //     print(message["message"]);
+  //   }
+  // }
 
   @override
   void initState() {
@@ -253,7 +253,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                     ),
                     onPressed: () {
-                      emailVerification();
+                      //emailVerification();
                     },
                   ),
                   FlatButton(
@@ -519,7 +519,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      userSignup();
+                      //userSignup();
                       if (_emailController.text.isNotEmpty) {
                         toggleMobile();
                       }

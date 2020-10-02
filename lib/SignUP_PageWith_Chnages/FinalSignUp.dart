@@ -32,10 +32,17 @@ class _SignupState extends State<Signup> {
     final response1 = await http.post(
       url,
       body: jsonEncode(
-          <String, String>{'Name': n, 'Email': e, 'Mobile': m, 'Password': p}),
+          <String, String>{
+            'Name': n,
+            'Email': e,
+            'Mobile': m,
+            'Password': p
+          }),
     );
     var message1 = jsonDecode(response1.body);
+    print("#####################");
     print(message1);
+    print("#####################");
     if (message1 != null) {
       setState(() {
         uid = message1.toString();
@@ -104,8 +111,7 @@ class _SignupState extends State<Signup> {
     n = nameController.text;
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/RetrieveOtp.php';
-    print("****************************************************");
-    print("****************************************************");
+
     final response1 = await http.post(
       url,
       body: jsonEncode(<String, String>{
@@ -113,7 +119,10 @@ class _SignupState extends State<Signup> {
       }),
     );
     var message1 = jsonDecode(response1.body);
+    print("****************************************************");
+    print("otp");
     print(message1[0]["OTP"]);
+    print("****************************************************");
     if (pincode == int.parse(message1[0]["OTP"])) {
       e = emailController.text;
       p = passwordController.text;
@@ -121,6 +130,8 @@ class _SignupState extends State<Signup> {
       var url2 =
           'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/VerifyUser.php';
       print("****************************************************");
+      print("verify user");
+      print(uid);
       print(
           "${emailController.text} ** ${passwordController.text}** ${phoneController.text}");
       print("****************************************************");
@@ -128,9 +139,9 @@ class _SignupState extends State<Signup> {
         url2,
         body: jsonEncode(<String, String>{
           'UserID': uid,
-          'Email': e,
-          'Mobile': m,
-          'Password': p,
+          'Email': emailController.text,
+          'Mobile': phoneController.text,
+          'Password': passwordController.text,
         }),
       );
       var message2 = jsonDecode(response2.body);
@@ -139,6 +150,7 @@ class _SignupState extends State<Signup> {
         var url3 =
             'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserDetailsAdd.php';
         print("****************************************************");
+        print("inserted");
         print(
             "${emailController.text} ** ${passwordController.text}** ${phoneController.text}");
         print("****************************************************");
