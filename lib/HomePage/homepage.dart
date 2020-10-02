@@ -27,12 +27,11 @@ class _HomePageState extends State<HomePage> {
     var androidInitilize = new AndroidInitializationSettings('app_icon');
     var iOSinitilize = new IOSInitializationSettings();
     var initilizationsSettings =
-    new InitializationSettings(androidInitilize, iOSinitilize);
+        new InitializationSettings(androidInitilize, iOSinitilize);
     fltrNotification = new FlutterLocalNotificationsPlugin();
     fltrNotification.initialize(initilizationsSettings,
         onSelectNotification: notificationSelected);
   }
-
 
   Future notificationSelected(String payload) async {
     showDialog(
@@ -53,20 +52,16 @@ class _HomePageState extends State<HomePage> {
     _initialiseTimer();
   }
 
-
   void _initialiseTimer() {
-    _timer = Timer.periodic(const Duration(minutes:1), (_) => logoutUser);
+    _timer = Timer.periodic(const Duration(minutes: 1), (_) => logoutUser);
   }
 
-  void logoutUser(){
-
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (BuildContext context) =>
-                LoginPage()));
+  void logoutUser() {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
     _timer.cancel();
   }
+
   _HomePageState({@required this.currentUserID});
   @override
   Widget build(BuildContext context) {
@@ -87,7 +82,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       drawer: Drawer(
-        child: menuPage(currentUserID: currentUserID,),
+        child: menuPage(
+          currentUserID: currentUserID,
+        ),
       ),
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
@@ -101,7 +98,6 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     Row(
-
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
@@ -112,11 +108,6 @@ class _HomePageState extends State<HomePage> {
                             color: Color(0xff373D3F),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: _handleUserInteraction,
-                          onPanDown: _handleUserInteraction,
-                          onScaleStart: _handleUserInteraction,
-                        ),
                         IconButton(
                           iconSize: 40,
                           onPressed: () {
@@ -124,7 +115,9 @@ class _HomePageState extends State<HomePage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        NotificationPage(currentUserID: currentUserID,)));
+                                        NotificationPage(
+                                          currentUserID: currentUserID,
+                                        )));
                           },
                           icon: Icon(Icons.notifications_none),
                           color: Color(0xff373D3F),

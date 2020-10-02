@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_validator/string_validator.dart' as st_validator;
+import 'FinalSignUp.dart';
 import 'Widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:finance_app/forget_password.dart';
@@ -18,7 +19,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   String currentUserID;
   var val;
   TextEditingController emailController = TextEditingController();
@@ -27,13 +27,7 @@ class _LoginPageState extends State<LoginPage> {
 
   get handleTimeout => handleTimeOut();
 
-  void handleTimeOut(){
-
-
-
-
-
-}
+  void handleTimeOut() {}
 
   void _toggleVisibility() {
     setState(() {
@@ -45,15 +39,18 @@ class _LoginPageState extends State<LoginPage> {
     String email = emailController.text;
     String password = passwordController.text;
 
-    var url = 'http://sanjayagarwal.in/Finance App/signin2.php';
+    var url =
+        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserLogin.php';
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
-        "email": email,
+        "Value": email,
         "Password": password,
       }),
     );
     var message = jsonDecode(response.body);
+    print("rihgrowhge");
+    print(message);
     if (message != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('email', email);
@@ -67,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
       print(message);
     }
   }
-  
+
   @override
   void initState() {
     // TODO: implement initState
@@ -219,13 +216,11 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-
-
-                            // Navigator.pushReplacement(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (BuildContext context) =>
-                            //             SignUp()));
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        Signup()));
                           },
                           child: Text(
                             'Sign Up',
@@ -297,10 +292,4 @@ class _LoginPageState extends State<LoginPage> {
       }),
     );
   }
-
-
-
-
-
-
 }
