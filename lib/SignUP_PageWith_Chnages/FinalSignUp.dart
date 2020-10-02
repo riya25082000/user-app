@@ -16,49 +16,30 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  String currentUserID;
-  int otp;
-  Future<void> SignUpUser() async {
+  String e, n, m, p, uid;
+  Future UserInsert() async {
+    e = emailController.text;
+    n = nameController.text;
+    p = passwordController.text;
+    m = phoneController.text;
+    int otp;
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserSignUp.php';
-    final response = await http.post(
+    print("****************************************************");
+    print(
+        "${nameController.text} ** ${emailController.text}** ${phoneController.text}");
+    print("****************************************************");
+    final response1 = await http.post(
       url,
-      body: jsonEncode(<String, String>{
-        "Name": nameController.text,
-        "Email": emailController.text,
-        "Phone": phoneController.text,
-        "Password": passwordController.text,
-      }),
+      body: jsonEncode(
+          <String, String>{'Name': n, 'Email': e, 'Mobile': m, 'Password': p}),
     );
-    var message = jsonDecode(response.body);
-    print("***********");
-    print(message);
-    if (message != null) {
+    var message1 = jsonDecode(response1.body);
+    print(message1);
+    if (message1 != null) {
       setState(() {
-        currentUserID = message.toString();
-        AddUserPassword(currentUserID);
+        uid = message1.toString();
       });
-    } else {
-      print(message);
-    }
-  }
-
-  Future<void> AddUserPassword(String currentid) async {
-    var url =
-        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/VerifyUser.php';
-    final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-        "UserID": currentid,
-        "Email": emailController.text,
-        "Mobile": phoneController.text,
-        "Password": passwordController.text,
-      }),
-    );
-    var message = jsonDecode(response.body);
-    print("***********");
-    print(message);
-    if (message != null) {
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -105,41 +86,86 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   onPressed: () {
-                    UserDetailsAdd(currentid);
+                    UserVerify(otp);
                   },
                 ),
               ],
             );
           });
     } else {
-      print(message);
+      print(message1);
     }
   }
 
-  Future UserDetailsAdd(String cid) async {
+  Future UserVerify(int pincode) async {
+    e = emailController.text;
+    m = phoneController.text;
+    p = passwordController.text;
+    n = nameController.text;
     var url =
-        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserDetailsAdd.php';
+        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/RetrieveOtp.php';
     print("****************************************************");
-    print("");
     print("****************************************************");
     final response1 = await http.post(
       url,
       body: jsonEncode(<String, String>{
-        'UserID': currentUserID,
-        'Name': nameController.text,
-        'Email': emailController.text,
-        'Mobile': phoneController.text,
+        'UserID': uid,
       }),
     );
     var message1 = jsonDecode(response1.body);
-    print(message1);
-    if (message1 == "Successful Insertion") {
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    currentUserID: cid,
-                  )));
+    print(message1[0]["OTP"]);
+    if (pincode == int.parse(message1[0]["OTP"])) {
+      e = emailController.text;
+      p = passwordController.text;
+      m = phoneController.text;
+      var url2 =
+          'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/VerifyUser.php';
+      print("****************************************************");
+      print(
+          "${emailController.text} ** ${passwordController.text}** ${phoneController.text}");
+      print("****************************************************");
+      final response2 = await http.post(
+        url2,
+        body: jsonEncode(<String, String>{
+          'UserID': uid,
+          'Email': e,
+          'Mobile': m,
+          'Password': p,
+        }),
+      );
+      var message2 = jsonDecode(response2.body);
+      print(message2);
+      if (message2 == "Successful Insertion") {
+        var url3 =
+            'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserDetailsAdd.php';
+        print("****************************************************");
+        print(
+            "${emailController.text} ** ${passwordController.text}** ${phoneController.text}");
+        print("****************************************************");
+        final response3 = await http.post(
+          url3,
+          body: jsonEncode(<String, String>{
+            'UserID': uid,
+            'Name': n,
+            'Email': e,
+            'Mobile': m,
+          }),
+        );
+        var message3 = jsonDecode(response3.body);
+        print(message3);
+        if (message3 == "Successful Insertion") {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomePage(
+                        currentUserID: uid,
+                      )));
+        } else {
+          print(message3);
+        }
+      } else {
+        print(message2);
+      }
     } else {
       print(message1);
     }
@@ -330,7 +356,7 @@ class _SignupState extends State<Signup> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      SignUpUser();
+                      UserInsert();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
