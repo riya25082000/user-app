@@ -25,10 +25,10 @@ class _SignupState extends State<Signup> {
     int otp;
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserSignUp.php';
-    print("****************************************************");
-    print(
-        "${nameController.text} ** ${emailController.text}** ${phoneController.text}");
-    print("****************************************************");
+    // print("****************************************************");
+    // print(
+    //     "${nameController.text} ** ${emailController.text}** ${phoneController.text}");
+    // print("****************************************************");
     final response1 = await http.post(
       url,
       body: jsonEncode(
@@ -149,11 +149,11 @@ class _SignupState extends State<Signup> {
       if (message2 == "Successful Insertion") {
         var url3 =
             'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserDetailsAdd.php';
-        print("****************************************************");
-        print("inserted");
-        print(
-            "${emailController.text} ** ${passwordController.text}** ${phoneController.text}");
-        print("****************************************************");
+        // print("****************************************************");
+        // print("inserted");
+        // print(
+        //     "${emailController.text} ** ${passwordController.text}** ${phoneController.text}");
+        // print("****************************************************");
         final response3 = await http.post(
           url3,
           body: jsonEncode(<String, String>{
