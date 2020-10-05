@@ -32,12 +32,7 @@ class _SignupState extends State<Signup> {
     final response1 = await http.post(
       url,
       body: jsonEncode(
-          <String, String>{
-            'Name': n,
-            'Email': e,
-            'Mobile': m,
-            'Password': p
-          }),
+          <String, String>{'Name': n, 'Email': e, 'Mobile': m, 'Password': p}),
     );
     var message1 = jsonDecode(response1.body);
     print("#####################");
@@ -139,9 +134,9 @@ class _SignupState extends State<Signup> {
         url2,
         body: jsonEncode(<String, String>{
           'UserID': uid,
-          'Email': emailController.text,
-          'Mobile': phoneController.text,
-          'Password': passwordController.text,
+          'Email': e,
+          'Mobile': m,
+          'Password': p,
         }),
       );
       var message2 = jsonDecode(response2.body);
