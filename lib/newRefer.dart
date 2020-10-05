@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'dart:async';
@@ -5,7 +7,7 @@ import 'dart:io';
 import 'components/ButtonsWidget.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'package:share/share.dart';
 import 'erroralert.dart';
 
 class RewardandRefer extends StatefulWidget {
@@ -317,34 +319,26 @@ class _RewardandReferState extends State<RewardandRefer> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                socialmedia('assets/images/facebook.png'),
-                                space(),
-                                socialtext('Facebook'),
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                socialmedia('assets/images/instagram.jpg'),
-                                space(),
-                                socialtext('Instagram'),
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                socialmedia('assets/images/wh.png'),
-                                space(),
-                                socialtext('Whatsapp'),
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                socialmedia('assets/images/share.png'),
-                                space(),
-                                socialtext('Share with'),
-                              ],
-                            ),
+                            RaisedButton(
+                              color: Color(0xff63E2E0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Share your Referral Code"),
+                              ),
+                              onPressed: () {
+                                final RenderBox box =
+                                    context.findRenderObject();
+                                Share.share(
+                                    "Hey! I am sharing my referral code with you: $rCode",
+                                    subject: "Code",
+                                    sharePositionOrigin:
+                                        box.localToGlobal(Offset.zero) &
+                                            box.size);
+                              },
+                            )
                           ],
                         ),
                         Divider(
