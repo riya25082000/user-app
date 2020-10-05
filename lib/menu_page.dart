@@ -202,7 +202,7 @@ class _menuPageState extends State<menuPage> {
                 onPress: () async {
                   SharedPreferences prefs =
                       await SharedPreferences.getInstance();
-                  prefs.remove('email');
+                  prefs.remove('userid');
                   Navigator.of(context).pushAndRemoveUntil(
                     // the new route
                     MaterialPageRoute(

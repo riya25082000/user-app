@@ -26,13 +26,13 @@ import 'MyGoals/GoalsHomePage.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var email = prefs.getString('email');
+  var userid = prefs.getString('userid');
   runApp(
     MaterialApp(
-      home: email == null
+      home: userid == null
           ? LoginPage()
           : HomePage(
-              currentUserID: '987654321',
+              currentUserID: userid,
             ),
     ),
   );
