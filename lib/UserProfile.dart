@@ -61,6 +61,7 @@ class _UserProfileState extends State<UserProfile> {
         "ReferalCode": referalCode
       }),
     );
+    print(referalCode);
     var message1 = await jsonDecode(response1.body);
     if (message1["message"] == "Successful Updation") {
       print("Successfully Updated");
@@ -83,18 +84,7 @@ class _UserProfileState extends State<UserProfile> {
       pan = "",
       referalCode = "",
       email = "";
-  void updateUserData() {
-    //function to update the data of user to sync database
-    Firestore.instance.collection('users').document(id).updateData({
-      'Name': name,
-      'Date of Birth': dob,
-      'Mobile Number': mobile,
-      'Pan Number': pan,
-      'Marital Status': referalCode,
-      'Gender': dropdownValue,
-      'Unique Client Code': userCode
-    });
-  }
+
 
   @override
   void initState() {
@@ -351,11 +341,14 @@ class _UserProfileState extends State<UserProfile> {
                       fontSize: tileHeight / 40,
                       color: Colors.black87,
                     ),
+
                   ),
+
                   SizedBox(
                     height: tileHeight / 80,
                   ),
                   Text(
+
                     '$referalCode',
                     style: TextStyle(
                       fontSize: tileHeight / 55,
