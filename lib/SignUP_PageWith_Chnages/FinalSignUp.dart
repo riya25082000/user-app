@@ -16,7 +16,7 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  String e, n, m, p, uid;
+  String e, n, m, p, uid, promo;
   Future UserInsert() async {
     e = emailController.text;
     n = nameController.text;
@@ -122,6 +122,7 @@ class _SignupState extends State<Signup> {
       e = emailController.text;
       p = passwordController.text;
       m = phoneController.text;
+      promo = promoController.text;
       var url2 =
           'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/VerifyUser.php';
       print("****************************************************");
@@ -156,6 +157,7 @@ class _SignupState extends State<Signup> {
             'Name': n,
             'Email': e,
             'Mobile': m,
+            'Promo': promo
           }),
         );
         var message3 = jsonDecode(response3.body);
@@ -175,55 +177,6 @@ class _SignupState extends State<Signup> {
       }
     } else {
       print(message1);
-    }
-  }
-
-  bool checked = false;
-
-  void toggle(bool check) {
-    if (checked == false) {
-      setState(() {
-        checked = true;
-        showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) {
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                title: Text(
-                  'Enter the promo code',
-                  style: TextStyle(
-                    color: Color(0xff373D3F),
-                  ),
-                ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[TextField()],
-                ),
-                actions: <Widget>[
-                  FlatButton(
-                    color: Color(0xff63E2E0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      'Confirm',
-                      style: TextStyle(
-                        color: Color(0xff373D3F),
-                      ),
-                    ),
-                    onPressed: () {},
-                  )
-                ],
-              );
-            });
-      });
-    } else {
-      setState(() {
-        checked = false;
-      });
     }
   }
 
@@ -248,6 +201,7 @@ class _SignupState extends State<Signup> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController promoController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -352,6 +306,27 @@ class _SignupState extends State<Signup> {
                             suffixIcon: IconButton(
                               onPressed: _toggleVisibility2,
                               icon: Icon(Icons.visibility_off),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        TextFormField(
+                          controller: promoController,
+                          decoration: InputDecoration(
+                            hintText: 'Promo Code',
+                            hintStyle: TextStyle(color: Color(0xff373D3F)),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.black),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xff63E2E0),
+                              ),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(0.5),
                             ),
                           ),
                         ),
@@ -467,26 +442,6 @@ class _SignupState extends State<Signup> {
                   ),
                   SizedBox(
                     height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Got any promo/referral code? ',
-                        style: TextStyle(
-                          color: Color(0xff373D3F),
-                        ),
-                      ),
-                      Checkbox(
-                        value: checked,
-                        onChanged: (bool value) {
-                          toggle(value);
-                        },
-                        activeColor: Color(0xff616161),
-                        checkColor: Colors.white,
-                        tristate: false,
-                      )
-                    ],
                   ),
                 ],
               ),

@@ -30,14 +30,14 @@ class _AdvisorPageState extends State<AdvisorPage> {
     );
     var message = await jsonDecode(response.body);
     print("****************************************");
-    print(message);
+    print(message[0]);
     print("****************************************");
     var url1 =
         'http://sanjayagarwal.in/Finance App/UserApp/Advisor/AdvisorPartDetails.php';
     final response1 = await http.post(
       url1,
       body: jsonEncode(<String, String>{
-        "AdvisorID": message[0]['AdvisorID'],
+        "AdvisorID": message[0]['AdvAlloted'],
       }),
     );
     var message1 = await jsonDecode(response1.body);

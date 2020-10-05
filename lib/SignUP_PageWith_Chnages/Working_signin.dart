@@ -51,17 +51,36 @@ class _LoginPageState extends State<LoginPage> {
     var message = jsonDecode(response.body);
     print("rihgrowhge");
     print(message);
-    if (message != null) {
+    if (message == "Invalid Username or Password Please Try Again") {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Invalid Email/Password"),
+            content: Text("Username or Password is invalid. Please try again"),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => LoginPage()));
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
+    } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('email', email);
+      prefs.setString('userid', message.toString());
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => HomePage(
                     currentUserID: message.toString(),
                   )));
-    } else {
-      print(message);
     }
   }
 

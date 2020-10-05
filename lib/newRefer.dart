@@ -48,6 +48,7 @@ class _RewardandReferState extends State<RewardandRefer> {
     print("****************************************");
     setState(() {
       rCode = message[0]['ReferalCode'];
+      ReferredTotal();
     });
     var url1 = 'http://sanjayagarwal.in/Finance App/ReferedToDetails.php';
     final response1 = await http.post(
@@ -109,6 +110,25 @@ class _RewardandReferState extends State<RewardandRefer> {
     var message3 = jsonDecode(response3.body);
     setState(() {
       total = int.parse(message3[0]["sum(rpoints)"]);
+    });
+  }
+
+  double counter = 0.0;
+  void ReferredTotal() async {
+    var url3 =
+        'http://sanjayagarwal.in/Finance App/UserApp/Rewards/RewardGraph1.php';
+    final response3 = await http.post(
+      url3,
+      body: jsonEncode(<String, String>{
+        "PromoCode": rCode,
+      }),
+    );
+    var message3 = jsonDecode(response3.body);
+    setState(() {
+      counter = double.parse(message3[0]["count(UserID)"]);
+      print("**********");
+      print(counter);
+      counter = counter / 12;
     });
   }
 
@@ -242,7 +262,7 @@ class _RewardandReferState extends State<RewardandRefer> {
                         ),
                         LinearPercentIndicator(
                           lineHeight: 14.0,
-                          percent: 0.3,
+                          percent: counter,
                           backgroundColor: Colors.grey,
                           progressColor: Color(0xff63E2E0),
                         ),

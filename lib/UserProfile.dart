@@ -17,11 +17,14 @@ class _UserProfileState extends State<UserProfile> {
   _UserProfileState({@required this.currentUserID});
   String dropdownValue;
   String userCode;
-  bool isEditing = false;
+  bool isEditing = false, _loading;
   SharedPreferences preferences;
   String id = "";
 
   void getUserData() async {
+    setState(() {
+      _loading = true;
+    });
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/Profile/UserDetails.php';
     final response = await http.post(
@@ -43,6 +46,7 @@ class _UserProfileState extends State<UserProfile> {
       dropdownValue = message[0]['Gender'];
       userCode = message[0]['UserID'];
       email = message[0]['Email'];
+      _loading = false;
     });
   }
 
@@ -65,6 +69,7 @@ class _UserProfileState extends State<UserProfile> {
     var message1 = await jsonDecode(response1.body);
     if (message1["message"] == "Successful Updation") {
       print("Successfully Updated");
+      getUserData();
     } else {
       print(message1["message"]);
     }
@@ -84,7 +89,6 @@ class _UserProfileState extends State<UserProfile> {
       pan = "",
       referalCode = "",
       email = "";
-
 
   @override
   void initState() {
@@ -116,282 +120,290 @@ class _UserProfileState extends State<UserProfile> {
         child: isEditing ? Icon(Icons.save) : Icon(Icons.edit),
         backgroundColor: Colors.green,
       ),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Name(as on PAN Card)',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  isEditing
-                      ? TextFormField(
-                          initialValue: name,
-                          onChanged: (value) {
-                            name = value;
-                          },
-                        )
-                      : Text(
-                          '$name',
+      body: _loading
+          ? Center(
+              child: CircularProgressIndicator(
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.grey),
+                backgroundColor: Color(0xff63E2E0),
+              ),
+            )
+          : SafeArea(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Name(as on PAN Card)',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        isEditing
+                            ? TextFormField(
+                                initialValue: name,
+                                onChanged: (value) {
+                                  name = value;
+                                },
+                              )
+                            : Text(
+                                '$name',
+                                style: TextStyle(
+                                  fontSize: tileHeight / 55,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                        isEditing
+                            ? SizedBox()
+                            : Divider(
+                                color: Colors.black45,
+                              ),
+                        SizedBox(
+                          height: tileHeight / 40,
+                        ),
+                        Text(
+                          'Date of Birth',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        isEditing
+                            ? TextFormField(
+                                initialValue: dob,
+                                onChanged: (value) {
+                                  dob = value;
+                                },
+                              )
+                            : Text(
+                                '$dob',
+                                style: TextStyle(
+                                  fontSize: tileHeight / 55,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                        isEditing
+                            ? SizedBox()
+                            : Divider(
+                                color: Colors.black45,
+                              ),
+                        SizedBox(
+                          height: tileHeight / 40,
+                        ),
+                        Text(
+                          'Mobile Number',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        isEditing
+                            ? TextFormField(
+                                initialValue: mobile,
+                                onChanged: (value) {
+                                  mobile = value;
+                                },
+                              )
+                            : Text(
+                                '$mobile',
+                                style: TextStyle(
+                                  fontSize: tileHeight / 55,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                        isEditing
+                            ? SizedBox()
+                            : Divider(
+                                color: Colors.black45,
+                              ),
+                        SizedBox(
+                          height: tileHeight / 40,
+                        ),
+                        Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        isEditing
+                            ? TextFormField(
+                                initialValue: email,
+                                onChanged: (value) {
+                                  email = value;
+                                },
+                              )
+                            : Text(
+                                '$email',
+                                style: TextStyle(
+                                  fontSize: tileHeight / 55,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                        isEditing
+                            ? SizedBox()
+                            : Divider(
+                                color: Colors.black45,
+                              ),
+                        SizedBox(
+                          height: tileHeight / 40,
+                        ),
+                        Text(
+                          'PAN Number',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        isEditing
+                            ? TextFormField(
+                                initialValue: pan,
+                                onChanged: (value) {
+                                  pan = value;
+                                },
+                              )
+                            : Text(
+                                '$pan',
+                                style: TextStyle(
+                                  fontSize: tileHeight / 55,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                        isEditing
+                            ? SizedBox()
+                            : Divider(
+                                color: Colors.black45,
+                              ),
+                        SizedBox(
+                          height: tileHeight / 40,
+                        ),
+                        Text(
+                          'Gender',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        isEditing
+                            ? DropdownButton<String>(
+                                value: dropdownValue,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: tileHeight / 40,
+                                elevation: 16,
+                                style: TextStyle(
+                                    color: Colors.black45,
+                                    fontSize: tileHeight / 55),
+                                underline: Container(
+                                  height: 2,
+                                  color: Colors.black45,
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue;
+                                  });
+                                },
+                                items: <String>[
+                                  'Male',
+                                  'Female',
+                                  ''
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              )
+                            : Text(
+                                '$dropdownValue',
+                                style: TextStyle(
+                                  fontSize: tileHeight / 55,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                        isEditing
+                            ? SizedBox()
+                            : Divider(
+                                color: Colors.black45,
+                              ),
+                        SizedBox(
+                          height: tileHeight / 40,
+                        ),
+                        Text(
+                          'Referal Code',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        Text(
+                          '$referalCode',
                           style: TextStyle(
                             fontSize: tileHeight / 55,
                             color: Colors.black45,
                           ),
                         ),
-                  isEditing
-                      ? SizedBox()
-                      : Divider(
+                        Divider(
                           color: Colors.black45,
                         ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                  Text(
-                    'Date of Birth',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  isEditing
-                      ? TextFormField(
-                          initialValue: dob,
-                          onChanged: (value) {
-                            dob = value;
-                          },
-                        )
-                      : Text(
-                          '$dob',
+                        SizedBox(
+                          height: tileHeight / 40,
+                        ),
+                        Text(
+                          'Unique Client Code',
+                          style: TextStyle(
+                            fontSize: tileHeight / 40,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(
+                          height: tileHeight / 80,
+                        ),
+                        Text(
+                          '$userCode',
                           style: TextStyle(
                             fontSize: tileHeight / 55,
                             color: Colors.black45,
                           ),
                         ),
-                  isEditing
-                      ? SizedBox()
-                      : Divider(
-                          color: Colors.black45,
+                        isEditing
+                            ? SizedBox()
+                            : Divider(
+                                color: Colors.black45,
+                              ),
+                        SizedBox(
+                          height: tileHeight / 40,
                         ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                  Text(
-                    'Mobile Number',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  isEditing
-                      ? TextFormField(
-                          initialValue: mobile,
-                          onChanged: (value) {
-                            mobile = value;
-                          },
-                        )
-                      : Text(
-                          '$mobile',
-                          style: TextStyle(
-                            fontSize: tileHeight / 55,
-                            color: Colors.black45,
-                          ),
-                        ),
-                  isEditing
-                      ? SizedBox()
-                      : Divider(
-                          color: Colors.black45,
-                        ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                  Text(
-                    'Email',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  isEditing
-                      ? TextFormField(
-                          initialValue: email,
-                          onChanged: (value) {
-                            email = value;
-                          },
-                        )
-                      : Text(
-                          '$email',
-                          style: TextStyle(
-                            fontSize: tileHeight / 55,
-                            color: Colors.black45,
-                          ),
-                        ),
-                  isEditing
-                      ? SizedBox()
-                      : Divider(
-                          color: Colors.black45,
-                        ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                  Text(
-                    'PAN Number',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  isEditing
-                      ? TextFormField(
-                          initialValue: pan,
-                          onChanged: (value) {
-                            pan = value;
-                          },
-                        )
-                      : Text(
-                          '$pan',
-                          style: TextStyle(
-                            fontSize: tileHeight / 55,
-                            color: Colors.black45,
-                          ),
-                        ),
-                  isEditing
-                      ? SizedBox()
-                      : Divider(
-                          color: Colors.black45,
-                        ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                  Text(
-                    'Gender',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  isEditing
-                      ? DropdownButton<String>(
-                          value: dropdownValue,
-                          icon: Icon(Icons.arrow_drop_down),
-                          iconSize: tileHeight / 40,
-                          elevation: 16,
-                          style: TextStyle(
-                              color: Colors.black45, fontSize: tileHeight / 55),
-                          underline: Container(
-                            height: 2,
-                            color: Colors.black45,
-                          ),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              dropdownValue = newValue;
-                            });
-                          },
-                          items: <String>['Male', 'Female', '']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        )
-                      : Text(
-                          '$dropdownValue',
-                          style: TextStyle(
-                            fontSize: tileHeight / 55,
-                            color: Colors.black45,
-                          ),
-                        ),
-                  isEditing
-                      ? SizedBox()
-                      : Divider(
-                          color: Colors.black45,
-                        ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                  Text(
-                    'Referal Code',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
-                    ),
-
-                  ),
-
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  Text(
-
-                    '$referalCode',
-                    style: TextStyle(
-                      fontSize: tileHeight / 55,
-                      color: Colors.black45,
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.black45,
-                  ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                  Text(
-                    'Unique Client Code',
-                    style: TextStyle(
-                      fontSize: tileHeight / 40,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  SizedBox(
-                    height: tileHeight / 80,
-                  ),
-                  Text(
-                    '$userCode',
-                    style: TextStyle(
-                      fontSize: tileHeight / 55,
-                      color: Colors.black45,
-                    ),
-                  ),
-                  isEditing
-                      ? SizedBox()
-                      : Divider(
-                          color: Colors.black45,
-                        ),
-                  SizedBox(
-                    height: tileHeight / 40,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
