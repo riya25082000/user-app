@@ -138,8 +138,8 @@ class _menuPageState extends State<menuPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (BuildContext context) => RewardPage(
-
+                          builder: (BuildContext context) => RewardandRefer(
+                                currentUserID: currentUserID,
                               )));
                 },
                 width: tileWidth,

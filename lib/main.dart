@@ -29,11 +29,10 @@ Future<void> main() async {
   var email = prefs.getString('email');
   runApp(
     MaterialApp(
-      home:       email == null
+      home: email == null
           ? LoginPage()
-        :
-      HomePage(
-              currentUserID: '8384500',
+          : HomePage(
+              currentUserID: '987654321',
             ),
     ),
   );
