@@ -2,12 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:share/share.dart';
 import 'dart:async';
 import 'dart:io';
 import 'components/ButtonsWidget.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:share/share.dart';
+
 import 'erroralert.dart';
 
 class RewardandRefer extends StatefulWidget {

@@ -14,12 +14,15 @@ import 'dart:convert';
 import 'signup2.dart';
 
 class LoginPage extends StatefulWidget {
+  String currentUserID;
+  LoginPage({@required this.currentUserID});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   String currentUserID;
+  _LoginPageState({@required this.currentUserID});
   var val;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -194,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        ForgetPassPage()));
+                                        ForgetPassPage(currentUserID: currentUserID,)));
                           },
                           child: Text('Forgot Password?',
                               style: TextStyle(
