@@ -1,22 +1,32 @@
 import 'dart:convert';
 
-import 'package:finance_app/HomePage/homepage.dart';
+
+import 'package:finance_app/SignUP_PageWith_Chnages/SignIn_page.dart';
+import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
+
 import 'package:http/http.dart' as http;
 
+
 class ForgetPassPage extends StatefulWidget {
+  String currentUserID;
+  ForgetPassPage({@required this.currentUserID});
   @override
   _ForgetPassPageState createState() => _ForgetPassPageState();
 }
 
-enum authProblems { UserNotFound, PasswordNotValid, NetworkError }
+
 
 class _ForgetPassPageState extends State<ForgetPassPage> {
-  bool linkSend = false;
   String currentUserID;
+
+  _ForgetPassPageState({@required this.currentUserID});
+
+  int otp;
+  bool linkSend = false;
+
   bool isEmail = false;
   String email = "";
   String errorMessage = "";
@@ -106,14 +116,12 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
                       //   }
                       //   return null;
                       // },
-                      onChanged: (value)
-                      {
+                      onChanged: (value) {
                         email = value;
-                        Fluttertoast.showToast(msg: email);
                       },
                       decoration: InputDecoration(
                         alignLabelWithHint: true,
-                        hintText: 'Phone No. or Email',
+                        hintText: ' Email',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                           borderSide: BorderSide(
@@ -159,16 +167,16 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            try {
-                              if (_formKey.currentState.validate()) {
-                                FirebaseAuth.instance
-                                    .sendPasswordResetEmail(email: email)
-                                    .then((value) =>
-                                    print("Check your email box"));
-                              }
-                            } catch (error) {
-                              Fluttertoast.showToast(msg: "Sign In Success !!");
-                            }
+                            // try {
+                            //   if (_formKey.currentState.validate()) {
+                            //     // FirebaseAuth.instance
+                            //     //     .sendPasswordResetEmail(email: email)
+                            //     //     .then((value) =>
+                            //     //     print("Check your email box"));
+                            //   }
+                            // } catch (error) {
+                            //
+                            // }
                           },
                           child: Text(
                             'Resend Link',
@@ -183,12 +191,12 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text(
-                        defineText(isEmail, linkSend),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Color(0xff373D3F),
-                            fontSize: tileWidth * 0.04),
+                      child: Text(''
+                        //defineText(isEmail, linkSend),
+                        // textAlign: TextAlign.center,
+                        // style: TextStyle(
+                        //     color: Color(0xff373D3F),
+                        //     fontSize: tileWidth * 0.04),
                       ),
                     ),
                   ),
@@ -218,14 +226,31 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
     );
     if (response.body.isNotEmpty) {
       var message = jsonDecode(response.body);
+
+
       if (message["message"] == "Successful") {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    HomePage(
-                      currentUserID: currentUserID,
-                    )));
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Password Changed"),
+                content: Text("Please check your email to get the temporary password."),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => LoginPage()));
+                    },
+                    child: Text("Ok"),
+                  )
+                ],
+              );
+            },
+          );
+        }
+
 
         setState(() {
           isEmail = true;
@@ -234,13 +259,10 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
       }
 
 
-    else {
-      print("****************************************************");
-      print(message["message"]);
-      print("****************************************************");
+      else {
+        // print("****************************************************");
+        // print(message["message"]);
+        // print("****************************************************");
+      }
     }
   }
-
-  }
-
-}

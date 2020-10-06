@@ -29,11 +29,12 @@ Future<void> main() async {
   var userid = prefs.getString('userid');
   runApp(
     MaterialApp(
-      home: userid == null
-          ? LoginPage()
-          : HomePage(
-              currentUserID: userid,
-            ),
+      home: LoginPage()
+      // userid == null
+      //     ? LoginPage()
+      //     : HomePage(
+      //         currentUserID: userid,
+      //       ),
     ),
   );
 }

@@ -19,12 +19,12 @@ import 'SignUp_page.dart';
 
 import 'SignUp_page.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage1 extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage1> {
   //final _formKey2 = GlobalKey<FormState>();
   String currentUserID;
   TextEditingController emailController = TextEditingController();
