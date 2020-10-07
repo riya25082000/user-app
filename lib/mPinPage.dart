@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finance_app/HomePage.dart';
 import 'package:finance_app/HomePage/homepage.dart';
+import 'package:finance_app/RewardHistory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lock_screen/flutter_lock_screen.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,15 +15,12 @@ import 'package:http/http.dart' as http;
 SharedPreferences preferences;
 String id = "";
 var pin;
-String myPass;
-void readData() async {
-  preferences = await SharedPreferences.getInstance();
-  id = preferences.getString("id");
-}
+
+
 
 class PassCodeScreen extends StatefulWidget {
-  String currentUserID;
-  PassCodeScreen({@required this.currentUserID});
+  final String currentUserID;
+  PassCodeScreen({Key key, @required this.currentUserID}) : super(key: key);
 
   @override
   _PassCodeScreenState createState() => new _PassCodeScreenState();
@@ -31,37 +29,32 @@ class PassCodeScreen extends StatefulWidget {
 class _PassCodeScreenState extends State<PassCodeScreen> {
   SharedPreferences preferences;
   String currentUserID;
-
-//  String id = "";
-//  var pin ;
-//  void readData() async{
-//
-//     preferences = await SharedPreferences.getInstance();
-//     id = preferences.getString("id");
-//  }
+  _PassCodeScreenState({@required this.currentUserID});
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getPin();
   }
 
-  Future<Null> getPin() async {
+  Future getPin() async {
     var url = 'http://sanjayagarwal.in/Finance App/MpinDetail.php';
+    currentUserID='8384500';
+    print(currentUserID);
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
         "UserID": currentUserID,
       }),
     );
-    message = await jsonDecode(response.body);
+     message = await jsonDecode(response.body);
     print("****************************************");
+    print(currentUserID);
     print(message);
     print("****************************************");
   }
-
   var message;
+
 
   bool isFingerprint = false;
 
@@ -87,7 +80,8 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //myPass = ['1','2','3','4'];
+
+
 
     return LockScreen(
         title: "Security Pin ",
@@ -102,39 +96,27 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
         wrongPassContent: "Wrong pass please try again.",
         wrongPassTitle: "Opps!",
         wrongPassCancelButtonText: "Cancel",
-        passCodeVerify: (passcode) async {
-          for (int i = 0; i < message.length; i++) {
-            if (passcode[i] != message[i]) {
+        passCodeVerify: (List<int> passcode) async {
+          List<int> myPass =
+          [int.parse(message[0]),
+            int.parse(message[1]),
+            int.parse(message[2]),
+            int.parse(message[3]) ];
+          print(myPass);
+          for (int i = 0; i < myPass.length; i++) {
+            if (passcode[i] != myPass[i]) {
+              print(passcode);
               return false;
             }
           }
-
-          Firestore.instance
-              .collection('users')
-              .document(id)
-              .get()
-              .then((DocumentSnapshot) {
-            //myPass = (DocumentSnapshot.data['pin'].toString());
-
-            for (int i = 0; i < myPass.length; i++) {
-              if (passcode[i] != myPass[i]) {
-                return false;
-              }
-            }
-          });
-
           return true;
         },
         onSuccess: () {
+
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
-
-               
-
-         
-
-            return HomeScreen(
-              currentUserId: currentUserID,
+            return HomePage(
+              currentUserID: currentUserID,
             );
           }));
 

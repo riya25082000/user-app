@@ -171,19 +171,7 @@ class _SignUpState extends State<SignUp> {
 
   Map<String, String> _authData = {'email': '', 'password': ''};
 
-  Future<void> _submit() async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
-    _formKey.currentState.save();
-    try {
-      await Provider.of<Authentication>(context, listen: false)
-          .signUp(_authData['email'], _authData['password']);
-    } catch (error) {
-      var errorMessage = 'Authentication Failed. Please try again';
-      _showErrorDailog(errorMessage);
-    }
-  }
+
 
   void _showErrorDailog(String msg) {
     showDialog(

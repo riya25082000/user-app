@@ -1,18 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:finance_app/HomePage.dart';
-import 'package:finance_app/HomePage/homepage.dart';
+
+
 import 'package:finance_app/mPinPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-StreamSubscription<DocumentSnapshot> subscription;
+
 SharedPreferences preferences;
 String id = "";
 var pin ;
@@ -32,13 +30,13 @@ var pin ;
    _SetPinState({@required this.currentUserID});
    final _formKey = GlobalKey<FormState>();
    var val;
-   FirebaseUser currentUser;
+
 
 
    TextEditingController pinCon;
 
    final _pinController = TextEditingController();
-// //
+
 
    Future setMPin() async {
 
@@ -46,6 +44,7 @@ var pin ;
      var url = 'http://sanjayagarwal.in/Finance App/MpinInsert.php';
      print("****************************************************");
      print(pin);
+     print(currentUserID);
      print("****************************************************");
      final response = await http.post(
        url,
@@ -55,32 +54,26 @@ var pin ;
        }),
      );
      var message = jsonDecode(response.body);
-     if (message["message"] == "Successful Signup") {
+     if (message["message"] == "Successful") {
+       print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+       print(currentUserID);
        Navigator.push(
            context,
            MaterialPageRoute(
-               builder: (context) => HomePage(
+               builder: (context) => PassCodeScreen(
                  currentUserID: currentUserID,
                )));
+       print(currentUserID);
      } else {
        print(message["message"]);
      }
    }
 
-//   void readData() async{
-//
-//     preferences = await SharedPreferences.getInstance();
-//     id = preferences.getString("id");
-//   }
-
-
-
-
    @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    readData();
+
   }
 
    void validateAndSave() {
@@ -241,24 +234,7 @@ Future<Null> printPin(){
 }
 
 
-    Future <Null> savePinToFireStore() async{
-      //id = preferences.getString("id");
-    // String fileName = id;
 
-    // StorageReference storageReference = FirebaseStorage.instance.ref().child(fileName);
-     Firestore.instance.collection('users').document(id).updateData({
-       "pin": _pinController.text
-     });
-
-       Navigator.of(context).pushReplacement(
-           new MaterialPageRoute(builder: (BuildContext context){
-             return PassCodeScreen();
-           })) ;
-
-
-
-
-    }
  }
 
 

@@ -44,15 +44,17 @@ class _LoginPageState extends State<LoginPage> {
 
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserLogin.php';
+    print(email);
+    print(password);
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
         "Value": email,
-        "Password": password,
+        "Password": password.toString(),
       }),
     );
     var message = jsonDecode(response.body);
-    print("rihgrowhge");
+
     print(message);
     if (message == "Invalid Username or Password Please Try Again") {
       showDialog(
