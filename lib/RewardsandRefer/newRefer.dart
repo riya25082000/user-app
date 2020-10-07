@@ -5,11 +5,12 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:share/share.dart';
 import 'dart:async';
 import 'dart:io';
-import 'components/ButtonsWidget.dart';
+import '../components/ButtonsWidget.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'erroralert.dart';
+import '../erroralert.dart';
+import 'EarnMethods.dart';
 
 class RewardandRefer extends StatefulWidget {
   String currentUserID;
@@ -66,6 +67,7 @@ class _RewardandReferState extends State<RewardandRefer> {
 
   bool _loading;
   List rew = [];
+  int v = 0;
   void getRewardHistory() async {
     setState(() {
       _loading = true;
@@ -85,6 +87,11 @@ class _RewardandReferState extends State<RewardandRefer> {
       print("****************************************");
       print(message);
       print("****************************************");
+      if (message.length == 0) {
+        setState(() {
+          v = 1;
+        });
+      }
       setState(() {
         rew = message;
         _loading = false;
@@ -206,11 +213,33 @@ class _RewardandReferState extends State<RewardandRefer> {
     }
   }
 
+  List Earn = [];
+  void getEarnWays() async {
+    setState(() {
+      _loading = true;
+    });
+    var url =
+        'http://sanjayagarwal.in/Finance App/UserApp/Rewards/getEarnDetails.php';
+    final response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{}),
+    );
+    var message = await jsonDecode(response.body);
+    print("****************************************");
+    print(message);
+    print("****************************************");
+    setState(() {
+      Earn = message;
+      _loading = false;
+    });
+  }
+
   @override
   void initState() {
     getReferData();
     getRewardHistory();
     SumBonus();
+    getEarnWays();
     // TODO: implement initState
     super.initState();
   }
@@ -322,9 +351,24 @@ class _RewardandReferState extends State<RewardandRefer> {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 15),
-                                      child: GestureDetector(
-                                        onTap: () {},
-                                        child: Text('Copy Code',
+                                      child: RaisedButton(
+                                        color: Color(0xff63E2E0),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        onPressed: () {
+                                          final RenderBox box =
+                                              context.findRenderObject();
+                                          Share.share(
+                                              "Hey! I am sharing my referral code with you: $rCode",
+                                              subject: "Code",
+                                              sharePositionOrigin:
+                                                  box.localToGlobal(
+                                                          Offset.zero) &
+                                                      box.size);
+                                        },
+                                        child: Text('Share',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: height * 0.02,
@@ -336,31 +380,6 @@ class _RewardandReferState extends State<RewardandRefer> {
                               ],
                             ),
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            RaisedButton(
-                              color: Color(0xff63E2E0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Share your Referral Code"),
-                              ),
-                              onPressed: () {
-                                final RenderBox box =
-                                    context.findRenderObject();
-                                Share.share(
-                                    "Hey! I am sharing my referral code with you: $rCode",
-                                    subject: "Code",
-                                    sharePositionOrigin:
-                                        box.localToGlobal(Offset.zero) &
-                                            box.size);
-                              },
-                            )
-                          ],
                         ),
                         Divider(
                           color: Colors.grey,
@@ -385,7 +404,7 @@ class _RewardandReferState extends State<RewardandRefer> {
                                       ),
                                       Flexible(
                                         child: Text(
-                                          rewards[index][0],
+                                          Earn[index]['summary'],
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: height * 0.022,
@@ -405,7 +424,13 @@ class _RewardandReferState extends State<RewardandRefer> {
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            EarnMethods(Earn)));
+                              },
                               child: Text('View More Details',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
@@ -418,51 +443,44 @@ class _RewardandReferState extends State<RewardandRefer> {
                         Divider(
                           color: Colors.grey,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 8),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  controller: coder,
-                                  decoration: InputDecoration(
-                                    alignLabelWithHint: true,
-                                    hintText: 'Have a code?',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                      borderSide: BorderSide(
-                                        style: BorderStyle.solid,
-                                      ),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: TextField(
+                                controller: coder,
+                                decoration: InputDecoration(
+                                  hintText: 'Have a code?',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    borderSide: BorderSide(
+                                      style: BorderStyle.solid,
                                     ),
                                   ),
-                                  textAlign: TextAlign.left,
-                                  textAlignVertical: TextAlignVertical.bottom,
-                                  style: TextStyle(
-                                      color: Color(0xff373D3F),
-                                      fontSize: height * 0.02),
+                                ),
+                                style: TextStyle(
+                                  color: Color(0xff373D3F),
                                 ),
                               ),
-                              SizedBox(
-                                width: 8,
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            RaisedButton(
+                              color: Color(0xff63E2E0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              RaisedButton(
-                                color: Color(0xff63E2E0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Text(
-                                  'REDEEM',
-                                  style: TextStyle(
-                                      color: Color(0xff373D3F),
-                                      fontSize: height * 0.02),
-                                ),
-                                onPressed: () {
-                                  RewardRedeem();
-                                },
+                              child: Text(
+                                'REDEEM',
+                                style: TextStyle(
+                                    color: Color(0xff373D3F),
+                                    fontSize: height * 0.02),
                               ),
-                            ],
-                          ),
+                              onPressed: () {
+                                RewardRedeem();
+                              },
+                            ),
+                          ],
                         ),
                         GestureDetector(
                           child: Container(
@@ -509,93 +527,108 @@ class _RewardandReferState extends State<RewardandRefer> {
                                       ),
                                       Container(
                                         height: height * 0.4,
-                                        child: ListView.builder(
-                                          itemCount: rew.length,
-                                          scrollDirection: Axis.vertical,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return Column(
-                                              children: <Widget>[
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                15)),
-                                                    color: Colors.white,
+                                        child: v == 1
+                                            ? Column(
+                                                children: [
+                                                  Text(
+                                                      "No Rewards have been redeemed"),
+                                                  Icon(
+                                                    Icons.warning,
+                                                    size: 50,
                                                   ),
-                                                  height: 80,
-                                                  width: width * 0.8,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: <Widget>[
-                                                        Expanded(
-                                                          flex: 3,
-                                                          child: Center(
-                                                            child: Text(
-                                                              rew[index]
-                                                                  ["rcode"],
-                                                              style: TextStyle(
-                                                                color: Color(
-                                                                    0xff373D3F),
-                                                                fontSize:
-                                                                    height *
-                                                                        0.03,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                ],
+                                              )
+                                            : ListView.builder(
+                                                itemCount: rew.length,
+                                                scrollDirection: Axis.vertical,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return Column(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          15)),
+                                                          color: Colors.white,
                                                         ),
-                                                        Expanded(
-                                                          flex: 3,
-                                                          child: Column(
+                                                        height: 80,
+                                                        width: width * 0.8,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(10.0),
+                                                          child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
-                                                                    .center,
+                                                                    .spaceBetween,
                                                             children: <Widget>[
-                                                              Text(
-                                                                'Points Earned',
-                                                                style: TextStyle(
-                                                                    color: Color(
-                                                                        0xff373D3F),
-                                                                    fontSize:
-                                                                        height *
-                                                                            0.02,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                              ),
-                                                              Text(
-                                                                rew[index]
-                                                                    ["rpoints"],
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Color(
-                                                                      0xff373D3F),
-                                                                  fontSize:
-                                                                      height *
-                                                                          0.02,
+                                                              Expanded(
+                                                                flex: 3,
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    rew[index][
+                                                                        "rcode"],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Color(
+                                                                          0xff373D3F),
+                                                                      fontSize:
+                                                                          height *
+                                                                              0.03,
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                              )
+                                                              ),
+                                                              Expanded(
+                                                                flex: 3,
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Text(
+                                                                      'Points Earned',
+                                                                      style: TextStyle(
+                                                                          color: Color(
+                                                                              0xff373D3F),
+                                                                          fontSize: height *
+                                                                              0.02,
+                                                                          fontWeight:
+                                                                              FontWeight.w600),
+                                                                    ),
+                                                                    Text(
+                                                                      rew[index]
+                                                                          [
+                                                                          "rpoints"],
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Color(
+                                                                            0xff373D3F),
+                                                                        fontSize:
+                                                                            height *
+                                                                                0.02,
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ],
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              ),
                                       )
                                     ],
                                   ),
