@@ -24,19 +24,6 @@ class _AddGoalsState extends State<AddGoals> {
     String amoun = value.text;
     String yea = year.text;
     String type = goalselected.toString();
-    var url1 =
-        'http://sanjayagarwal.in/Finance App/UserApp/Goals/GoalIdMax.php';
-    final response = await http.post(
-      url1,
-      body: jsonEncode(<String, String>{
-        "UserID": currentUserID,
-      }),
-    );
-    var message = jsonDecode(response.body);
-    String oldGoalID = message[0]['max(GoalID)'];
-    int intermediateId = int.parse(oldGoalID);
-    int newGoalID = intermediateId + 1;
-
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/Goals/GoalInsert.php';
     print("****************************************************");
@@ -50,7 +37,6 @@ class _AddGoalsState extends State<AddGoals> {
         "Type": type,
         "Year": yea,
         "UserID": currentUserID,
-        "GoalID": newGoalID.toString()
       }),
     );
     var message1 = jsonDecode(response1.body);
@@ -62,7 +48,7 @@ class _AddGoalsState extends State<AddGoals> {
                     currentUserID: currentUserID,
                   )));
     } else {
-      print(message1["message"]);
+      print(message1);
     }
   }
 

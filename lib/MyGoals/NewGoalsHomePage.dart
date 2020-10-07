@@ -47,6 +47,7 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
     }
   }
 
+  int visiblenature = 0;
   void getGoals() async {
     setState(() {
       _loading = true;
@@ -66,10 +67,14 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
       print("****************************************");
       print(message);
       print("****************************************");
+      if (message.length == 0) {
+        visiblenature = 1;
+      }
       setState(() {
         data = message;
         _loading = false;
       });
+      print(data);
     } on TimeoutException catch (e) {
       alerttimeout(context, currentUserID);
     } on Error catch (e) {
@@ -351,6 +356,18 @@ class _NewGoalsPageState extends State<NewGoalsPage> {
                         ),
                       ),
                     ],
+                  ),
+                  Visibility(
+                    visible: visiblenature == 1 ? true : false,
+                    child: Column(
+                      children: [
+                        Text("No goals have been added"),
+                        Icon(
+                          Icons.warning,
+                          size: 50,
+                        ),
+                      ],
+                    ),
                   ),
                   goalsoptions[current],
                 ],

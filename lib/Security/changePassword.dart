@@ -16,13 +16,52 @@ class _ChangePasswordState extends State<ChangePassword> {
   _ChangePasswordState({@required this.currentUserID});
   TextEditingController old = TextEditingController();
   TextEditingController newp = TextEditingController();
+  String oldpass;
+  Future CheckPassword() async {
+    oldpass = old.text;
+    var url =
+        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/CheckOldPassword.php';
+    final response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        "UserID": currentUserID,
+      }),
+    );
+    var message = jsonDecode(response.body);
+    print("rihgrowhge");
+    print(message);
+    if (message == oldpass) {
+      PasswordUpdate();
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Wrong password"),
+            content: Text("You have entered the wrong password"),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => LoginPage()));
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
+    }
+  }
 
   Future PasswordUpdate() async {
     print("********************************************************");
     print("");
     print("********************************************************");
     var url =
-        'http://sanjayagarwal.in/Finance App/UserApp/ChangeUserPassword.php';
+        'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/ChangeUserPassword.php';
     final response1 = await http.post(
       url,
       body: jsonEncode(<String, String>{
@@ -35,10 +74,28 @@ class _ChangePasswordState extends State<ChangePassword> {
     print("ch1,$message1");
     print("********************************************************");
     if (message1 == "Successful Updation") {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Password Update Successful"),
+            content: Text("Your password has been changed successfully."),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => LoginPage()));
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
     } else {
-      print(message1["message"]);
+      print(message1);
     }
   }
 
@@ -91,6 +148,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       ),
                       child: TextField(
                         controller: old,
+                        obscureText: true,
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Enter your old password'),
@@ -114,6 +172,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         color: Color(0xfffffff).withOpacity(0.9),
                       ),
                       child: TextField(
+                        obscureText: true,
                         controller: newp,
                         decoration: InputDecoration(
                             border: InputBorder.none,
@@ -138,6 +197,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       color: Color(0xfffffff).withOpacity(0.9),
                     ),
                     child: TextField(
+                      obscureText: true,
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Enter your new password again'),
@@ -149,7 +209,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         borderRadius: BorderRadius.circular(50)),
                     padding: EdgeInsets.all(15),
                     onPressed: () {
-                      PasswordUpdate();
+                      CheckPassword();
                     },
                     child: Text(
                       "Change Password",
