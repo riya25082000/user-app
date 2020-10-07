@@ -1,4 +1,5 @@
 
+import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:finance_app/setPin.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +15,10 @@ Future<void> main() async {
     MaterialApp(
       home:
 
-      userid == null
-          ? LoginPage()
-          : PassCodeScreen(
+      // userid == null
+      //     ? LoginPage()
+      //     :
+      PassCodeScreen(
               currentUserID: userid,
             ),
     ),
