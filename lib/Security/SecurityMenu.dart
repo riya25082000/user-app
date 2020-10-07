@@ -1,3 +1,4 @@
+import 'package:finance_app/Security/ChangeMpin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -88,7 +89,15 @@ class _SecurityMenuState extends State<SecurityMenu> {
                       height: 10,
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ChangeMpin(
+                                      currentUserID: currentUserID,
+                                    )));
+                      },
                       child: option(
                           height, width, "Change Mpin", "Reset your Mpin"),
                     ),

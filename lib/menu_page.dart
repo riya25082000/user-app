@@ -3,11 +3,12 @@ import 'package:finance_app/MyGoals/NewGoalsHomePage.dart';
 import 'package:finance_app/NewsLetter/NewsLetter.dart';
 import 'package:finance_app/Reward.dart';
 import 'package:finance_app/Security/SecurityMenu.dart';
-import 'file:///C:/Users/Shravani/AndroidStudioProjects/finanace-app%20-%20Copy%20(2)/lib/RewardandRefer/newRefer.dart';
+
 import 'package:finance_app/newadvisor.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'RewardsandRefer/newRefer.dart';
 import 'Support/Support.dart';
 import 'Learning/LearningHomePage.dart';
 import 'Security/changePassword.dart';
