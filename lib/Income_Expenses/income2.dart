@@ -37,7 +37,7 @@ class _income2State extends State<income2> {
     print(message);
     print("****************************************");
     if (message == "Successfully Deleted") {
-      getIncome();
+      Income();
     } else {
       print(message["message"]);
     }
@@ -56,43 +56,17 @@ class _income2State extends State<income2> {
     print(message);
     print("****************************************");
     if (message == "Successfully Deleted") {
-      getExpense();
+      Expense();
     } else {
       print(message["message"]);
     }
   }
 
-  void getIncome() async {
+  void Income() async {
     try {
       setState(() {
         _loading = true;
       });
-      var url2 =
-          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeSum.php';
-      final response2 = await http
-          .post(
-            url2,
-            body: jsonEncode(<String, String>{
-              "UserID": widget.currentUserID,
-            }),
-          )
-          .timeout(Duration(seconds: 30));
-      var message2 = jsonDecode(response2.body);
-      totalincome = int.parse(message2[0]["sum(Amount)"]);
-      var url3 =
-          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseSum.php';
-      final response3 = await http
-          .post(
-            url3,
-            body: jsonEncode(<String, String>{
-              "UserID": widget.currentUserID,
-            }),
-          )
-          .timeout(Duration(seconds: 30));
-      var message3 = jsonDecode(response3.body);
-      totalexpense = int.parse(message3[0]["sum(Amount)"]);
-      savings = totalincome - totalexpense;
-      calculatePotential(dropdown, rate, time);
       var url =
           'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeDetails.php';
       final response = await http
@@ -110,47 +84,59 @@ class _income2State extends State<income2> {
       setState(() {
         i = message1;
         _loading = false;
+        if (i.length != 0) {
+          IncSum();
+        } else {
+          totalincome = 0;
+          savings = totalincome - totalexpense;
+          calculatePotential(dropdown, rate, time);
+        }
       });
     } on TimeoutException catch (e) {
       alerttimeout(context, currentUserID);
     } on Error catch (e) {
+      print(e);
       alerterror(context, currentUserID);
     } on SocketException catch (e) {
       alertinternet(context, currentUserID);
     }
   }
 
-  void getExpense() async {
+  void IncSum() async {
+    var url2 =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeSum.php';
+    final response2 = await http.post(
+      url2,
+      body: jsonEncode(<String, String>{
+        "UserID": widget.currentUserID,
+      }),
+    );
+    var message2 = jsonDecode(response2.body);
+    totalincome = int.parse(message2[0]["sum(Amount)"]);
+    savings = totalincome - totalexpense;
+    calculatePotential(dropdown, rate, time);
+  }
+
+  void ExpSum() async {
+    var url3 =
+        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseSum.php';
+    final response3 = await http.post(
+      url3,
+      body: jsonEncode(<String, String>{
+        "UserID": widget.currentUserID,
+      }),
+    );
+    var message3 = jsonDecode(response3.body);
+    totalexpense = int.parse(message3[0]["sum(Amount)"]);
+    savings = totalincome - totalexpense;
+    calculatePotential(dropdown, rate, time);
+  }
+
+  void Expense() async {
     try {
       setState(() {
         _loading = true;
       });
-      var url2 =
-          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeSum.php';
-      final response2 = await http
-          .post(
-            url2,
-            body: jsonEncode(<String, String>{
-              "UserID": widget.currentUserID,
-            }),
-          )
-          .timeout(Duration(seconds: 30));
-      var message2 = jsonDecode(response2.body);
-      totalincome = int.parse(message2[0]["sum(Amount)"]);
-      var url3 =
-          'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseSum.php';
-      final response3 = await http
-          .post(
-            url3,
-            body: jsonEncode(<String, String>{
-              "UserID": widget.currentUserID,
-            }),
-          )
-          .timeout(Duration(seconds: 30));
-      var message3 = jsonDecode(response3.body);
-      totalexpense = int.parse(message3[0]["sum(Amount)"]);
-      savings = totalincome - totalexpense;
-      calculatePotential(dropdown, rate, time);
       var url =
           'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseDetails.php';
       final response = await http
@@ -168,6 +154,15 @@ class _income2State extends State<income2> {
       setState(() {
         e = message4;
         _loading = false;
+        if (e.length != 0) {
+          ExpSum();
+        } else {
+          setState(() {
+            totalexpense = 0;
+            savings = totalincome - totalexpense;
+            calculatePotential(dropdown, rate, time);
+          });
+        }
       });
     } on TimeoutException catch (e) {
       alerttimeout(context, currentUserID);
@@ -183,8 +178,8 @@ class _income2State extends State<income2> {
     print("****************************************");
     print(currentUserID);
     print("****************************************");
-    getIncome();
-    getExpense();
+    Income();
+    Expense();
     // TODO: implement initState
     super.initState();
   }
@@ -453,6 +448,40 @@ class _income2State extends State<income2> {
                   ),
                   Divider(
                     color: Colors.grey,
+                  ),
+                  Visibility(
+                    visible: (i.length == 0 && choice == 0 && _loading == false)
+                        ? true
+                        : false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          Text('No income is added'),
+                          Icon(
+                            Icons.warning,
+                            size: 50,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: (e.length == 0 && choice == 1 && _loading == false)
+                        ? true
+                        : false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        children: [
+                          Text('No expense is added'),
+                          Icon(
+                            Icons.warning,
+                            size: 50,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   moneytype[choice],
                   Row(

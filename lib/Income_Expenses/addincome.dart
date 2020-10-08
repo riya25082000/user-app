@@ -15,22 +15,10 @@ class Add extends StatefulWidget {
 class _AddState extends State<Add> {
   int incsel = 0;
   Future incomeInsert() async {
-    var url1 =
-        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeIdMax.php';
-    final response = await http.post(
-      url1,
-      body: jsonEncode(<String, String>{
-        "UserID": widget.currentUserId,
-      }),
-    );
-    var message = jsonDecode(response.body);
-    String oldIncomeID = message[0]['max(IncomeID)'];
-    int intermediateId = int.parse(oldIncomeID);
-    int newIncomeID = intermediateId + 1;
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/IncomeInsert.php';
     print("****************************************************");
-    print("$incsel,${value.text},${widget.currentUserId},$newIncomeID");
+    print("$incsel,${value.text},${widget.currentUserId},");
     print("****************************************************");
     final response1 = await http.post(
       url,
@@ -38,7 +26,6 @@ class _AddState extends State<Add> {
         "Type": incsel.toString(),
         "Amount": value.text,
         "UserID": widget.currentUserId,
-        "IncomeID": newIncomeID.toString()
       }),
     );
     var message1 = jsonDecode(response1.body);
@@ -50,7 +37,7 @@ class _AddState extends State<Add> {
                     currentUserID: widget.currentUserId,
                   )));
     } else {
-      print(message1["message"]);
+      print(message1);
     }
   }
 
@@ -247,22 +234,10 @@ class AddE extends StatefulWidget {
 class _AddEState extends State<AddE> {
   int expsel = 0;
   Future expenseInsert() async {
-    var url1 =
-        'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseIdMax.php';
-    final response = await http.post(
-      url1,
-      body: jsonEncode(<String, String>{
-        "UserID": widget.currentUserId,
-      }),
-    );
-    var message = jsonDecode(response.body);
-    String oldExpenseID = message[0]['max(ExpenseID)'];
-    int intermediateId = int.parse(oldExpenseID);
-    int newExpenseID = intermediateId + 1;
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/IncomeExpense/ExpenseInsert.php';
     print("****************************************************");
-    print("$expsel,${val.text},${widget.currentUserId},$newExpenseID");
+    print("$expsel,${val.text},${widget.currentUserId},");
     print("****************************************************");
     final response1 = await http.post(
       url,
@@ -270,7 +245,6 @@ class _AddEState extends State<AddE> {
         "Type": expsel.toString(),
         "Amount": val.text,
         "UserID": widget.currentUserId,
-        "ExpenseID": newExpenseID.toString()
       }),
     );
     var message1 = jsonDecode(response1.body);
@@ -282,7 +256,7 @@ class _AddEState extends State<AddE> {
                     currentUserID: widget.currentUserId,
                   )));
     } else {
-      print(message1["message"]);
+      print(message1);
     }
   }
 
