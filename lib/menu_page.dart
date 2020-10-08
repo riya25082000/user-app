@@ -3,6 +3,7 @@ import 'package:finance_app/MyGoals/NewGoalsHomePage.dart';
 import 'package:finance_app/NewsLetter/NewsLetter.dart';
 import 'package:finance_app/Reward.dart';
 import 'package:finance_app/Security/SecurityMenu.dart';
+import 'package:finance_app/advisor.dart';
 
 import 'package:finance_app/newadvisor.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';

@@ -19,6 +19,7 @@ class _AdvisorPageState extends State<AdvisorPage> {
   String adCode = '';
   String adEmail = '';
   String adPhone = '';
+  bool alloted = false;
   void getAdvisor() async {
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/Advisor/AdvisorOfUser.php';
@@ -30,26 +31,39 @@ class _AdvisorPageState extends State<AdvisorPage> {
     );
     var message = await jsonDecode(response.body);
     print("****************************************");
-    print(message[0]);
+    print(message[0]['AdvAlloted']);
     print("****************************************");
-    var url1 =
-        'http://sanjayagarwal.in/Finance App/UserApp/Advisor/AdvisorPartDetails.php';
-    final response1 = await http.post(
-      url1,
-      body: jsonEncode(<String, String>{
-        "AdvisorID": message[0]['AdvAlloted'],
-      }),
-    );
-    var message1 = await jsonDecode(response1.body);
-    print("****************************************");
-    print(message1);
-    print("****************************************");
-    setState(() {
-      adEmail = message1[0]['Email'];
-      adName = message1[0]['Name'];
-      adPhone = message1[0]['Mobile'];
-      adCode = message1[0]['AdvisorID'];
-    });
+    if(message[0]['AdvAlloted']==null)
+      {
+        setState(() {
+          alloted=false;
+        });
+      }
+    else {
+      setState(() {
+        alloted=true;
+      });
+    }
+    if(alloted) {
+      var url1 =
+          'http://sanjayagarwal.in/Finance App/UserApp/Advisor/AdvisorPartDetails.php';
+      final response1 = await http.post(
+        url1,
+        body: jsonEncode(<String, String>{
+          "AdvisorID": message[0]['AdvAlloted'],
+        }),
+      );
+      var message1 = await jsonDecode(response1.body);
+      print("****************************************");
+      print(message1);
+      print("****************************************");
+      setState(() {
+        adEmail = message1[0]['Email'];
+        adName = message1[0]['Name'];
+        adPhone = message1[0]['Mobile'];
+        adCode = message1[0]['AdvisorID'];
+      });
+    }
   }
 
   @override
@@ -82,7 +96,8 @@ class _AdvisorPageState extends State<AdvisorPage> {
           ),
         ),
       ),
-      body: LayoutBuilder(
+      body: alloted ?
+      LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
           return SingleChildScrollView(
             child: ConstrainedBox(
@@ -304,6 +319,72 @@ class _AdvisorPageState extends State<AdvisorPage> {
             ),
           );
         },
+      ) :
+      Center(
+        child: Container(
+          height: height < 640 ? height * 0.3 : height * 0.23,
+          width: width * 0.9,
+          color: Colors.white,
+          child: Card(
+            color: Colors.white,
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 8, top: 12),
+                  child: Text(
+                    'Have a question for your Advisor?',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20.0,
+                      color: Color(0xff373D3F),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: height * 0.1,
+                  width: width * 0.6,
+                  child: ResponsiveTextField(
+                    textAlign: TextAlign.center,
+                    availableWidth:
+                    MediaQuery.of(context).size.width,
+                    minLines: 1,
+                    maxLines: 5,
+                    style: TextStyle(fontSize: 16),
+                    decoration: InputDecoration(
+                      hintText: 'Type your question',
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10.5,
+                ),
+                SizedBox(
+                  height: height * 0.05,
+                  width: width * 0.8,
+                  child: FlatButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10))),
+                    onPressed: () {},
+                    color: Color(0xff63E2E0),
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(
+                        color: Color(0xff373D3F),
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
