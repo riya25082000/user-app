@@ -1,4 +1,5 @@
 
+import 'package:finance_app/DisableTouchID.dart';
 import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:finance_app/Support/Support.dart';
@@ -22,8 +23,8 @@ Future<void> main() async {
       userid == null
           ? LoginPage()
           :
-      Support(
-              currentUserID: userid,
+      PassCodeScreen(
+              currentUserID: '8384500',
             ),
     ),
   );
