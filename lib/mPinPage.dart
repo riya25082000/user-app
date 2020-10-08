@@ -35,11 +35,12 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
   void initState() {
     super.initState();
     getPin();
+    getTouchID();
   }
-
+var  enabled;
   Future getPin() async {
     var url = 'http://sanjayagarwal.in/Finance App/MpinDetail.php';
-    //currentUserID='8384500';
+    currentUserID='8384500';
     print(currentUserID);
     final response = await http.post(
       url,
@@ -53,6 +54,27 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
     print(message);
     print("****************************************");
   }
+
+  Future getTouchID() async {
+    var url = 'http://sanjayagarwal.in/Finance App/TouchIDDetail.php';
+    //currentUserID='8384500';
+    print(currentUserID);
+    final response = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        "UserID": currentUserID,
+      }),
+    );
+    var message1 = await jsonDecode(response.body);
+    print("****************************************");
+    print(currentUserID);
+  //  print(message1);
+    print("****************************************");
+    setState(() {
+      enabled = message1;
+      print(enabled);
+    });
+  }
   var message;
 
 
@@ -61,21 +83,23 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
   Future<Null> biometrics() async {
     final LocalAuthentication auth = new LocalAuthentication();
     bool authenticated = false;
-
-    try {
-      authenticated = await auth.authenticateWithBiometrics(
-          localizedReason: 'Scan your fingerprint to authenticate',
-          useErrorDialogs: true,
-          stickyAuth: false);
-    } on PlatformException catch (e) {
-      print(e);
+    if(enabled=='0') {
+      try {
+        authenticated = await auth.authenticateWithBiometrics(
+            localizedReason: 'Scan your fingerprint to authenticate',
+            useErrorDialogs: true,
+            stickyAuth: false);
+      } on PlatformException catch (e) {
+        print(e);
+      }
+      if (!mounted) return;
+      if (authenticated) {
+        setState(() {
+          isFingerprint = true;
+        });
+      }
     }
-    if (!mounted) return;
-    if (authenticated) {
-      setState(() {
-        isFingerprint = true;
-      });
-    }
+    else print(enabled);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'package:finance_app/DisableTouchID.dart';
+import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/Security/ChangeMpin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +59,14 @@ class _SecurityMenuState extends State<SecurityMenu> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            //Navigator.pop(context);
+            Navigator.push(
+                context,
+            MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    HomePage(
+                      currentUserID: currentUserID,
+                    )));
           },
           icon: Icon(Icons.arrow_back_ios),
           color: Color(0xff373D3F),
@@ -81,7 +90,15 @@ class _SecurityMenuState extends State<SecurityMenu> {
                 child: Column(
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    DisableTouchID(
+                                      currentUserID: currentUserID,
+                                    )));
+                      },
                       child: option(
                           height, width, "Touch ID", "Enable/Disable TouchID"),
                     ),
