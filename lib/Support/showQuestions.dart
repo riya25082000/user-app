@@ -77,7 +77,7 @@ class _showQuestionState extends State<showQuestion> {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
-                color: Colors.purple,
+                color: Color(0xff63E2E0),
                 width: 2.0,
               ),
             ),
