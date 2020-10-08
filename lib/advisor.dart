@@ -5,24 +5,25 @@ import 'package:responsive_text_field/responsive_text_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class Advisor extends StatefulWidget {
+class Advisor1 extends StatefulWidget {
   final String currentUserID;
-  Advisor({@required this.currentUserID});
+  Advisor1({@required this.currentUserID});
 
   @override
   _AdvisorState createState() => _AdvisorState();
 }
 
-class _AdvisorState extends State<Advisor> {
+class _AdvisorState extends State<Advisor1> {
   String adName='';
   String adCode='';
   String adEmail = '';
   String adPhone = '';
+  bool alloted ;
   void getAdvisor() async {
     print("***************************************");
     print('ch1');
     print("****************************************");
-    var url = 'http://sanjayagarwal.in/Finance App/AdvisorOfUser.php';
+    var url = 'http://sanjayagarwal.in/Finance App/UserApp/Advisor/AdvisorOfUser.php';
     final response = await http.post(
       url,
       body: jsonEncode(<String, String>{
@@ -33,6 +34,18 @@ class _AdvisorState extends State<Advisor> {
     print("****************************************");
     print(message);
     print("****************************************");
+
+    if(message==null)
+      {
+        setState(() {
+          alloted=false;
+        });
+      }
+    else {
+      setState(() {
+        alloted=true;
+      });
+    }
   }
   @override
   void initState() {
@@ -64,7 +77,8 @@ class _AdvisorState extends State<Advisor> {
           ),
         ),
       ),
-      body: LayoutBuilder(
+      body: alloted ?
+       LayoutBuilder(
         builder: (BuildContext context, BoxConstraints viewportConstraints) {
 
           return SingleChildScrollView(
@@ -306,7 +320,7 @@ class _AdvisorState extends State<Advisor> {
                             end:Alignment.topLeft,
                           ),
                         ),
-
+//............................................. have a question.......................................................
                           child: Column(
                             children: <Widget>[
                               Padding(
@@ -358,6 +372,7 @@ class _AdvisorState extends State<Advisor> {
                                   ),
                                 ),
                               )
+       //............................................. have a question.......................................................
                             ],
                           ),
                         ),
@@ -370,7 +385,62 @@ class _AdvisorState extends State<Advisor> {
           );
           
         },
-      ),
+      ) :
+       Center(
+         child: Column(
+    children: <Widget>[
+    Padding(
+          padding:
+          const EdgeInsets.only(left: 8, top: 12),
+    child: Text(
+    'Have a question for your Advisor?',
+    style: TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 20.0,
+    color: Color(0xff373D3F),
+    ),
+    ),
+    ),
+    Container(
+    height: height * 0.1,
+    width: width * 0.6,
+    child: ResponsiveTextField(
+    textAlign: TextAlign.center,
+    availableWidth:
+    MediaQuery.of(context).size.width,
+    minLines: 1,
+    maxLines: 5,
+    style: TextStyle(fontSize: 16),
+    decoration: InputDecoration(
+    hintText: 'Type your question',
+    ),
+    ),
+    ),
+    SizedBox(
+    height: 10.5,
+    ),
+    SizedBox(
+    height: height * 0.05,
+    width: width * 0.8,
+    child: FlatButton(
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.only(
+    bottomLeft: Radius.circular(10),
+    bottomRight: Radius.circular(10))),
+    onPressed: () {},
+    color: Color(0xff80aaff),
+    child: Text(
+    'Submit',
+    style: TextStyle(
+    color: Color(0xff373D3F),
+    fontSize: 20,
+    ),
+    ),
+    ),
+    )
+    ],
+         ),
+       ),
     );
   }
 }
