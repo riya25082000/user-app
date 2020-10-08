@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import '../erroralert.dart';
+import 'Support.dart';
 
 class showQuestion extends StatefulWidget {
   String currentUserID;
@@ -76,7 +77,7 @@ class _showQuestionState extends State<showQuestion> {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border.all(
-                color: Colors.purple,
+                color: Color(0xff63E2E0),
                 width: 2.0,
               ),
             ),
@@ -134,7 +135,7 @@ class _showQuestionState extends State<showQuestion> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (BuildContext context) => SupportUserPage()));
+                                        builder: (BuildContext context) => Support()));
                               },
                               icon: Icon(Icons.arrow_back_ios),
                               color: Colors.white,
