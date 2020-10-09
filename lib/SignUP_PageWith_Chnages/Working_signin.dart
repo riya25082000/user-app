@@ -52,9 +52,9 @@ class _LoginPageState extends State<LoginPage> {
     if (value.isEmpty) {
       _loading = false;
       return 'Please enter a password';
-    } else if (value.length < 8) {
+    } else if (value.length < 5) {
       _loading = false;
-      return 'Password must be greater than 8 alphabets';
+      return 'Password must be greater than 5 characters';
     } else {
       return null;
     }

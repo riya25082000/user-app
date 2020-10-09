@@ -126,9 +126,9 @@ class _ChangePasswordState extends State<ChangePassword> {
     if (value.isEmpty) {
       _loading = false;
       return 'Password must not be blank';
-    } else if (value.length < 8) {
+    } else if (value.length < 5) {
       _loading = false;
-      return 'Password must be of at least 8 characters';
+      return 'Password must be of at least 5 characters';
     } else
       return null;
   }
@@ -137,9 +137,9 @@ class _ChangePasswordState extends State<ChangePassword> {
     if (value.isEmpty) {
       _loading = false;
       return 'Password must not be blank';
-    } else if (value.length < 8) {
+    } else if (value.length < 5) {
       _loading = false;
-      return 'New Password must be of at least 8 characters';
+      return 'New Password must be of at least 5 characters';
     } else
       return null;
   }

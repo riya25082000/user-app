@@ -131,7 +131,7 @@ class _DisableTouchIDState extends State<DisableTouchID> {
                     TouchIDUpdate();
                   },
                   child: Text(
-                    "Change Password",
+                    "Change ",
                     style: TextStyle(
                         color: Color(0xff373D3F),
                         fontSize: 25,
