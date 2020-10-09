@@ -231,9 +231,9 @@ class _SignupState extends State<Signup> {
     if (value.isEmpty) {
       _loading = false;
       return 'Password must not be blank';
-    } else if (value.length < 8) {
+    } else if (value.length < 5) {
       _loading = false;
-      return 'Password must be of at least 8 characters';
+      return 'Password must be of at least 5 characters';
     } else
       return null;
   }
