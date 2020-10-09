@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -10,30 +9,26 @@ class DisableTouchID extends StatefulWidget {
   String currentUserID;
   DisableTouchID({@required this.currentUserID});
   @override
-  _DisableTouchIDState createState() => _DisableTouchIDState(currentUserID: currentUserID);
+  _DisableTouchIDState createState() =>
+      _DisableTouchIDState(currentUserID: currentUserID);
 }
 
-
-
 class _DisableTouchIDState extends State<DisableTouchID> {
-  String currentUserID ;
+  String currentUserID;
   _DisableTouchIDState({@required this.currentUserID});
-  String dropdownValue;
+  int able;
+  String dropdownValue = "Enable";
 
   @override
   void initState() {
     super.initState();
   }
+
   Future TouchIDUpdate() async {
-int able;
-currentUserID='8384500';
-    var url =
-        'http://sanjayagarwal.in/Finance App/touchIDDisable.php';
-    if(dropdownValue=='Enable')
-      {
-        able=0;
-      }
-    else {
+    var url = 'http://sanjayagarwal.in/Finance App/touchIDDisable.php';
+    if (dropdownValue == 'Enable') {
+      able = 0;
+    } else {
       able = 1;
     }
     print(currentUserID);
@@ -49,9 +44,11 @@ currentUserID='8384500';
     if (message1 == "Successful Updation") {
       print(message1);
       Navigator.push(
-                   context,
+          context,
           MaterialPageRoute(
-                       builder: (BuildContext context) => SecurityMenu()));
+              builder: (BuildContext context) => SecurityMenu(
+                    currentUserID: currentUserID,
+                  )));
       // showDialog(
       //   context: context,
       //   builder: (BuildContext context) {
@@ -71,13 +68,11 @@ currentUserID='8384500';
       //     //   // ],
       //     // );
       //   },
-     // );
+      // );
     } else {
       print(message1);
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -88,79 +83,68 @@ currentUserID='8384500';
         backgroundColor: Color(0xff63E2E0),
       ),
       backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Center(
-            child:Padding(
-              padding: const EdgeInsets.all(16.0),
-              child:Column(
-                children: <Widget>[
-             Text(
-              'TouchID',
-              style: TextStyle(
-                fontSize: tileHeight / 40,
-                color: Colors.black87,
-              ),
-            ),
-
-                  DropdownButton<String>(
-                    value: dropdownValue,
-                    icon: Icon(Icons.arrow_drop_down),
-                    iconSize: tileHeight / 40,
-                    elevation: 16,
-                    style: TextStyle(
-                        color: Colors.black45,
-                        fontSize: tileHeight / 55),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.black45,
-                    ),
-                    onChanged: (String newValue) {
-
-                      setState(() {
-                        dropdownValue = newValue;
-                        print(dropdownValue);
-                      });
-
-                    },
-                    items: <String>[
-                      'Enable',
-                      'Disable',
-
-                    ].map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'TouchID',
+                  style: TextStyle(
+                    fontSize: tileHeight / 40,
+                    color: Colors.black87,
                   ),
-
-                    RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
-                      padding: EdgeInsets.all(15),
-                      onPressed: () {
-                        TouchIDUpdate();
-                      },
-                      child: Text(
-                        "Change Password",
-                        style: TextStyle(
-                            color: Color(0xff373D3F),
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      elevation: 6.0,
-                      color: Color(0xff63E2E0),
-                    ),
-
-
-
+                ),
+                DropdownButton<String>(
+                  value: dropdownValue,
+                  icon: Icon(Icons.arrow_drop_down),
+                  iconSize: tileHeight / 40,
+                  elevation: 16,
+                  style: TextStyle(
+                      color: Colors.black45, fontSize: tileHeight / 55),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.black45,
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      dropdownValue = newValue;
+                      print(dropdownValue);
+                    });
+                  },
+                  items: <String>[
+                    'Enable',
+                    'Disable',
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                RaisedButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  padding: EdgeInsets.all(15),
+                  onPressed: () {
+                    TouchIDUpdate();
+                  },
+                  child: Text(
+                    "Change Password",
+                    style: TextStyle(
+                        color: Color(0xff373D3F),
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  elevation: 6.0,
+                  color: Color(0xff63E2E0),
+                ),
               ],
-              ),
             ),
           ),
-
         ),
-
-      );
+      ),
+    );
   }
 }

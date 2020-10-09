@@ -62,11 +62,10 @@ class _SecurityMenuState extends State<SecurityMenu> {
             //Navigator.pop(context);
             Navigator.push(
                 context,
-            MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    HomePage(
-                      currentUserID: currentUserID,
-                    )));
+                MaterialPageRoute(
+                    builder: (BuildContext context) => HomePage(
+                          currentUserID: currentUserID,
+                        )));
           },
           icon: Icon(Icons.arrow_back_ios),
           color: Color(0xff373D3F),
@@ -110,8 +109,7 @@ class _SecurityMenuState extends State<SecurityMenu> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ChangeMpin(
+                                builder: (BuildContext context) => ChangeMpin(
                                       currentUserID: currentUserID,
                                     )));
                       },
