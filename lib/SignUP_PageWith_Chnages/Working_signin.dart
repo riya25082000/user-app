@@ -24,8 +24,6 @@ class _LoginPageState extends State<LoginPage> {
   String currentUserID;
   _LoginPageState({@required this.currentUserID});
   var val;
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   bool _isHidden = true;
 
   get handleTimeout => handleTimeOut();
@@ -38,10 +36,47 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future userLogin() async {
-    String email = emailController.text;
-    String password = passwordController.text;
+  bool _loading = false;
+  String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (value.isEmpty) {
+      _loading = false;
+      return 'Please enter a valid email or phone number';
+    } else
+      return null;
+  }
 
+  String validatePassword(String value) {
+    if (value.isEmpty) {
+      _loading = false;
+      return 'Please enter a password';
+    } else if (value.length < 8) {
+      _loading = false;
+      return 'Password must be greater than 8 alphabets';
+    } else {
+      return null;
+    }
+  }
+
+  final _formKey = GlobalKey<FormState>();
+  bool _autoValidate = false;
+  void _validateInputs() {
+    if (_formKey.currentState.validate()) {
+//    If all data are correct then save data to out variables
+      _formKey.currentState.save();
+      userLogin();
+    } else {
+//    If all data are not valid then start auto validation.
+      setState(() {
+        _autoValidate = true;
+      });
+    }
+  }
+
+  String email, password;
+  Future userLogin() async {
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserLogin.php';
     print(email);
@@ -50,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
       url,
       body: jsonEncode(<String, String>{
         "Value": email,
-        "Password": password.toString(),
+        "Password": password,
       }),
     );
     var message = jsonDecode(response.body);
@@ -96,10 +131,20 @@ class _LoginPageState extends State<LoginPage> {
     //_initialiseTimer();
   }
 
-  final _formKey2 = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _loading
+        ? new Container(
+            width: 70.0,
+            height: 70.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(
+                    child: new CircularProgressIndicator(
+                  backgroundColor: Color(0xff63E2E0),
+                ))),
+          )
+        : new Container();
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -130,29 +175,21 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Form(
+                      key: _formKey,
+                      autovalidate: _autoValidate,
                       child: Column(
                         children: [
                           TextFormField(
-                            controller: emailController,
                             decoration: textfield("Phone Number/ Email"),
-                            validator: (value1) {
-                              if (value1.isEmpty) {
-                                return 'Please enter an email address';
-                              }
-                              if (st_validator.isEmail(value1)) {
-                                return 'Enter a valid email address';
-                              }
-                              if (value1.split('@').length != 2) {
-                                return 'Enter a valid email address';
-                              }
-                              return null;
+                            validator: validateEmail,
+                            onSaved: (v1) {
+                              email = v1;
                             },
                           ),
                           SizedBox(
                             height: 20,
                           ),
                           TextFormField(
-                            controller: passwordController,
                             obscureText: _isHidden,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -170,19 +207,14 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: _toggleVisibility,
-                                  icon: Icon(Icons.visibility_off),
+                                  icon: _isHidden
+                                      ? Icon(Icons.visibility)
+                                      : Icon(Icons.visibility_off),
                                 )),
-                            validator: (String value) {
-                              val = value;
-                              if (value.isEmpty) {
-                                return 'Please enter a password';
-                              }
-                              if (value.length < 8) {
-                                return 'Password must be greater than 8 alphabets';
-                              }
-                              return null;
+                            validator: validatePassword,
+                            onSaved: (value) {
+                              password = value;
                             },
-                            onSaved: (value) {},
                           ),
                         ],
                       ),
@@ -215,7 +247,12 @@ class _LoginPageState extends State<LoginPage> {
                       height: 10,
                     ),
                     RaisedButton(
-                      onPressed: userLogin,
+                      onPressed: () {
+                        setState(() {
+                          _loading = true;
+                        });
+                        _validateInputs();
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
@@ -288,16 +325,23 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: 30,
                     ),
-                    Container(
-                      width: width * 0.7,
-                      child: RaisedButton(
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 50),
+                      child: FlatButton(
                         color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                         onPressed: () {},
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Image.asset('assets/images/google.jpg',
                                 height: 50, width: 40),
+                            SizedBox(
+                              width: 10,
+                            ),
                             Text(
                               'Login with Google',
                               style: TextStyle(
@@ -308,6 +352,10 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
+                    ),
+                    Align(
+                      child: loadingIndicator,
+                      alignment: FractionalOffset.center,
                     ),
                   ],
                 ),

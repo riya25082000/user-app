@@ -16,14 +16,15 @@ SharedPreferences preferences;
 String id = "";
 var pin;
 
-
-
 class PassCodeScreen extends StatefulWidget {
   final String currentUserID;
   PassCodeScreen({Key key, @required this.currentUserID}) : super(key: key);
 
   @override
-  _PassCodeScreenState createState() => new _PassCodeScreenState(currentUserID: currentUserID);
+
+  _PassCodeScreenState createState() =>
+      new _PassCodeScreenState(currentUserID: currentUserID);
+
 }
 
 class _PassCodeScreenState extends State<PassCodeScreen> {
@@ -37,10 +38,12 @@ class _PassCodeScreenState extends State<PassCodeScreen> {
     getPin();
     getTouchID();
   }
-var  enabled;
+
+  var enabled;
   Future getPin() async {
     var url = 'http://sanjayagarwal.in/Finance App/MpinDetail.php';
-    currentUserID;
+
+
     print(currentUserID);
     final response = await http.post(
       url,
@@ -48,7 +51,7 @@ var  enabled;
         "UserID": currentUserID,
       }),
     );
-     message = await jsonDecode(response.body);
+    message = await jsonDecode(response.body);
     print("****************************************");
     print(currentUserID);
     print(message);
@@ -68,22 +71,22 @@ var  enabled;
     var message1 = await jsonDecode(response.body);
     print("****************************************");
     print(currentUserID);
-  //  print(message1);
+    //  print(message1);
     print("****************************************");
     setState(() {
       enabled = message1;
       print(enabled);
     });
   }
-  var message;
 
+  var message;
 
   bool isFingerprint = false;
 
   Future<Null> biometrics() async {
     final LocalAuthentication auth = new LocalAuthentication();
     bool authenticated = false;
-    if(enabled=='0') {
+    if (enabled == '0') {
       try {
         authenticated = await auth.authenticateWithBiometrics(
             localizedReason: 'Scan your fingerprint to authenticate',
@@ -98,15 +101,12 @@ var  enabled;
           isFingerprint = true;
         });
       }
-    }
-    else print(enabled);
+    } else
+      print(enabled);
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return LockScreen(
         title: "Security Pin ",
         passLength: 4,
@@ -121,11 +121,12 @@ var  enabled;
         wrongPassTitle: "Opps!",
         wrongPassCancelButtonText: "Cancel",
         passCodeVerify: (List<int> passcode) async {
-          List<int> myPass =
-          [int.parse(message[0]),
+          List<int> myPass = [
+            int.parse(message[0]),
             int.parse(message[1]),
             int.parse(message[2]),
-            int.parse(message[3]) ];
+            int.parse(message[3])
+          ];
           print(myPass);
           for (int i = 0; i < myPass.length; i++) {
             if (passcode[i] != myPass[i]) {
@@ -136,18 +137,15 @@ var  enabled;
           return true;
         },
         onSuccess: () {
-
           Navigator.of(context).pushReplacement(
               new MaterialPageRoute(builder: (BuildContext context) {
             return HomePage(
               currentUserID: currentUserID,
             );
           }));
-
         });
   }
 }
-
 
 //import 'package:finance_app/HomePage.dart';
 //import 'package:flutter/material.dart';

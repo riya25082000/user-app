@@ -17,12 +17,8 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  String e, n, m, p, uid, promo;
+  String email, name, mobile, password, password2, uid, promo;
   Future UserInsert() async {
-    e = emailController.text;
-    n = nameController.text;
-    p = passwordController.text;
-    m = phoneController.text;
     int otp;
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/UserSignUp.php';
@@ -32,8 +28,12 @@ class _SignupState extends State<Signup> {
     // print("****************************************************");
     final response1 = await http.post(
       url,
-      body: jsonEncode(
-          <String, String>{'Name': n, 'Email': e, 'Mobile': m, 'Password': p}),
+      body: jsonEncode(<String, String>{
+        'Name': name,
+        'Email': email,
+        'Mobile': mobile,
+        'Password': password
+      }),
     );
     var message1 = jsonDecode(response1.body);
     print("#####################");
@@ -101,10 +101,6 @@ class _SignupState extends State<Signup> {
   }
 
   Future UserVerify(int pincode) async {
-    e = emailController.text;
-    m = phoneController.text;
-    p = passwordController.text;
-    n = nameController.text;
     var url =
         'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/RetrieveOtp.php';
 
@@ -120,25 +116,20 @@ class _SignupState extends State<Signup> {
     print(message1[0]["OTP"]);
     print("****************************************************");
     if (pincode == int.parse(message1[0]["OTP"])) {
-      e = emailController.text;
-      p = passwordController.text;
-      m = phoneController.text;
-      promo = promoController.text;
       var url2 =
           'http://sanjayagarwal.in/Finance App/UserApp/SignIn and SignUp/VerifyUser.php';
       print("****************************************************");
       print("verify user");
       print(uid);
-      print(
-          "${emailController.text} ** ${passwordController.text}** ${phoneController.text}");
+      print("$email** $password** $mobile");
       print("****************************************************");
       final response2 = await http.post(
         url2,
         body: jsonEncode(<String, String>{
           'UserID': uid,
-          'Email': e,
-          'Mobile': m,
-          'Password': p,
+          'Email': email,
+          'Mobile': mobile,
+          'Password': password,
         }),
       );
       var message2 = jsonDecode(response2.body);
@@ -155,9 +146,9 @@ class _SignupState extends State<Signup> {
           url3,
           body: jsonEncode(<String, String>{
             'UserID': uid,
-            'Name': n,
-            'Email': e,
-            'Mobile': m,
+            'Name': name,
+            'Email': email,
+            'Mobile': mobile,
             'Promo': promo
           }),
         );
@@ -190,7 +181,6 @@ class _SignupState extends State<Signup> {
   }
 
   bool _isHidden2 = true;
-  final formKey = GlobalKey<FormState>();
 
   void _toggleVisibility2() {
     setState(() {
@@ -198,13 +188,96 @@ class _SignupState extends State<Signup> {
     });
   }
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController promoController = TextEditingController();
+  TextEditingController p = TextEditingController();
+  bool _loading = false;
+  String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (value.isEmpty) {
+      _loading = false;
+      return 'Email must not be blank';
+    } else if (!regex.hasMatch(value)) {
+      _loading = false;
+      return 'Enter Valid Email';
+    } else
+      return null;
+  }
+
+  String validateMobile(String value) {
+// Indian Mobile number are of 10 digit only
+    if (value.isEmpty) {
+      _loading = false;
+      return 'Mobile Number must not be blank';
+    } else if (value.length != 10) {
+      _loading = false;
+      return 'Mobile Number must be of 10 digit';
+    } else
+      return null;
+  }
+
+  String validateName(String value) {
+    if (value.isEmpty) {
+      _loading = false;
+      return 'Name must not be blank';
+    } else if (value.length < 3) {
+      _loading = false;
+      return 'Name must be of more than 2 characters';
+    } else
+      return null;
+  }
+
+  String validatePass1(String value) {
+    if (value.isEmpty) {
+      _loading = false;
+      return 'Password must not be blank';
+    } else if (value.length < 8) {
+      _loading = false;
+      return 'Password must be of at least 8 characters';
+    } else
+      return null;
+  }
+
+  String validatePass2(String value) {
+    if (value.isEmpty) {
+      _loading = false;
+      return 'Password must not be blank';
+    } else if (password2 != password) {
+      _loading = false;
+      return 'The two passwords do not match';
+    } else
+      return null;
+  }
+
+  final _formKey = GlobalKey<FormState>();
+  bool _autoValidate = false;
+  void _validateInputs() {
+    if (_formKey.currentState.validate()) {
+//    If all data are correct then save data to out variables
+      _formKey.currentState.save();
+      UserInsert();
+    } else {
+//    If all data are not valid then start auto validation.
+      setState(() {
+        _autoValidate = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget loadingIndicator = _loading
+        ? new Container(
+            width: 70.0,
+            height: 70.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(
+                    child: new CircularProgressIndicator(
+                  backgroundColor: Color(0xff63E2E0),
+                ))),
+          )
+        : new Container();
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -233,18 +306,25 @@ class _SignupState extends State<Signup> {
                     ),
                   ),
                   Form(
-                    key: formKey,
+                    key: _formKey,
+                    autovalidate: _autoValidate,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
                           decoration: textfield("Name"),
-                          controller: nameController,
+                          validator: validateName,
+                          onSaved: (v1) {
+                            name = v1;
+                          },
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         TextFormField(
-                          controller: phoneController,
+                          validator: validateMobile,
+                          onSaved: (v2) {
+                            mobile = v2;
+                          },
                           keyboardType: TextInputType.number,
                           decoration: textfield("Phone Number"),
                           inputFormatters: <TextInputFormatter>[
@@ -256,15 +336,22 @@ class _SignupState extends State<Signup> {
                           height: 15,
                         ),
                         TextFormField(
-                          controller: emailController,
+                          validator: validateEmail,
+                          onSaved: (v3) {
+                            email = v3;
+                          },
                           keyboardType: TextInputType.emailAddress,
-                          decoration: textfield("Email (Optional)"),
+                          decoration: textfield("Email Address"),
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         TextFormField(
-                          controller: passwordController,
+                          controller: p,
+                          validator: validatePass1,
+                          onSaved: (v4) {
+                            password = v4;
+                          },
                           obscureText: _isHidden,
                           decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
@@ -282,13 +369,24 @@ class _SignupState extends State<Signup> {
                               ),
                               suffixIcon: IconButton(
                                 onPressed: _toggleVisibility,
-                                icon: Icon(Icons.visibility_off),
+                                icon: _isHidden
+                                    ? Icon(Icons.visibility)
+                                    : Icon(Icons.visibility_off),
                               )),
                         ),
                         SizedBox(
                           height: 15,
                         ),
                         TextFormField(
+                          validator: (val) {
+                            if (val.isEmpty)
+                              return 'Password field cannot be empty';
+                            if (val != p.text) return 'Passwords do not match';
+                            return null;
+                          },
+                          onSaved: (v5) {
+                            password2 = v5;
+                          },
                           obscureText: _isHidden2,
                           decoration: InputDecoration(
                             hintText: 'Confirm Password',
@@ -306,7 +404,9 @@ class _SignupState extends State<Signup> {
                             ),
                             suffixIcon: IconButton(
                               onPressed: _toggleVisibility2,
-                              icon: Icon(Icons.visibility_off),
+                              icon: _isHidden
+                                  ? Icon(Icons.visibility)
+                                  : Icon(Icons.visibility_off),
                             ),
                           ),
                         ),
@@ -314,7 +414,9 @@ class _SignupState extends State<Signup> {
                           height: 15,
                         ),
                         TextFormField(
-                          controller: promoController,
+                          onSaved: (v6) {
+                            promo = v6;
+                          },
                           decoration: InputDecoration(
                             hintText: 'Promo Code',
                             hintStyle: TextStyle(color: Color(0xff373D3F)),
@@ -339,7 +441,10 @@ class _SignupState extends State<Signup> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      UserInsert();
+                      setState(() {
+                        _loading = true;
+                      });
+                      _validateInputs();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -353,6 +458,10 @@ class _SignupState extends State<Signup> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
+                  ),
+                  Align(
+                    child: loadingIndicator,
+                    alignment: FractionalOffset.center,
                   ),
                   SizedBox(
                     height: 20,

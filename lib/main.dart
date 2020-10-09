@@ -1,4 +1,3 @@
-
 import 'package:finance_app/DisableTouchID.dart';
 import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
@@ -11,19 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'mPinPage.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var userid = prefs.getString('userid');
   runApp(
     MaterialApp(
-      home:
-
-      userid == null
+      home: userid == null
           ? LoginPage()
-          :
-      PassCodeScreen(
+
+          : PassCodeScreen(
+
               currentUserID: userid,
             ),
     ),
