@@ -18,7 +18,9 @@ Future<void> main() async {
     MaterialApp(
       home: userid == null
           ? LoginPage()
+
           : PassCodeScreen(
+
               currentUserID: userid,
             ),
     ),

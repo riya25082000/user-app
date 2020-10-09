@@ -251,6 +251,31 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
             },
           );
         }
+      else if(message["message"] == "Not"){
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Error"),
+                content: Text("This email is not registered."),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) => ForgetPassPage()));
+                    },
+                    child: Text("Ok"),
+                  )
+                ],
+              );
+
+            },
+        );
+
+
+            }
 
 
         setState(() {
@@ -260,10 +285,6 @@ class _ForgetPassPageState extends State<ForgetPassPage> {
       }
 
 
-      else {
-        // print("****************************************************");
-        // print(message["message"]);
-        // print("****************************************************");
-      }
+
     }
   }

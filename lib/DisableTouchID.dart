@@ -10,7 +10,7 @@ class DisableTouchID extends StatefulWidget {
   String currentUserID;
   DisableTouchID({@required this.currentUserID});
   @override
-  _DisableTouchIDState createState() => _DisableTouchIDState();
+  _DisableTouchIDState createState() => _DisableTouchIDState(currentUserID: currentUserID);
 }
 
 

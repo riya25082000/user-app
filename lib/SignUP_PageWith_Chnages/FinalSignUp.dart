@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:finance_app/HomePage/homepage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
+import '../setPin.dart';
 import 'Widgets.dart';
 
 class Signup extends StatefulWidget {
@@ -157,7 +158,7 @@ class _SignupState extends State<Signup> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => HomePage(
+                  builder: (context) => SetPin(
                         currentUserID: uid,
                       )));
         } else {
