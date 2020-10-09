@@ -17,11 +17,39 @@ class _DisableTouchIDState extends State<DisableTouchID> {
   String currentUserID;
   _DisableTouchIDState({@required this.currentUserID});
   int able;
-  String dropdownValue = "Enable";
+  String dropdownValue ;
 
   @override
   void initState() {
     super.initState();
+    TouchIDGet();
+  }
+  Future TouchIDGet() async {
+    var url =
+        'http://sanjayagarwal.in/Finance App/touchIDGet.php';
+
+    print(currentUserID);
+
+    final response1 = await http.post(
+      url,
+      body: jsonEncode(<String, String>{
+        "UserID": currentUserID,
+      }),
+    );
+    var message1 = jsonDecode(response1.body);
+    if (message1 == "1") {
+      //dropdownValue='Disable';
+      setState(() {
+        dropdownValue='Disable';
+      });
+    }
+    else if(message1 == "0") {
+      setState(() {
+        dropdownValue='Enable';
+      });
+    }
+    print("dem");
+    print(message1);
   }
 
   Future TouchIDUpdate() async {
@@ -42,6 +70,7 @@ class _DisableTouchIDState extends State<DisableTouchID> {
     );
     var message1 = jsonDecode(response1.body);
     if (message1 == "Successful Updation") {
+      TouchIDGet();
       print(message1);
       Navigator.push(
           context,
