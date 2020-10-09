@@ -19,7 +19,7 @@ Future<void> main() async {
       home: userid == null
           ? LoginPage()
 
-          : PassCodeScreen(
+          : SetPin(
 
               currentUserID: userid,
             ),

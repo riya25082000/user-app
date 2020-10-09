@@ -28,10 +28,33 @@ var pin ;
  class _SetPinState extends State<SetPin> {
    String currentUserID;
    _SetPinState({@required this.currentUserID});
-   final _formKey = GlobalKey<FormState>();
+
    var val;
+   String validatePin1(String value) {
+     if (value.isEmpty) {
+       _loading = false;
+       return 'Pin must not be blank';
+     } else if (value.length > 4) {
+       _loading = false;
+       return 'Pin must be of 4 digits';
+     } else
+       return null;
+   }
 
-
+   final _formKey = GlobalKey<FormState>();
+   bool _autoValidate = false;
+   void _validateInputs() {
+     if (_formKey.currentState.validate()) {
+//    If all data are correct then save data to out variables
+       _formKey.currentState.save();
+       setMPin();
+     } else {
+//    If all data are not valid then start auto validation.
+       setState(() {
+         _autoValidate = true;
+       });
+     }
+   }
 
    TextEditingController pinCon;
 
@@ -76,14 +99,7 @@ var pin ;
 
   }
 
-   void validateAndSave() {
-     final FormState form = _formKey.currentState;
-     if (form.validate()) {
-       print('Form is valid');
-     } else {
-       print('Form is invalid');
-     }
-   }
+
 
    bool _isHidden = true;
 
@@ -100,7 +116,7 @@ var pin ;
        _isHidden2 = !_isHidden2;
      });
    }
-
+   bool _loading = false;
    @override
    Widget build(BuildContext context) {
      var width = MediaQuery
@@ -139,6 +155,7 @@ var pin ;
                        ),
                        Form(
                            key: _formKey,
+                           autovalidate: _autoValidate,
                            child: SingleChildScrollView(
                              child: Column(
                                children: <Widget>[
@@ -157,17 +174,18 @@ var pin ;
                                          icon: Icon(Icons.visibility_off),
                                        )
                                    ),
-                                   validator: (String value1) {
-                                     val = value1;
-                                     Fluttertoast.showToast(msg: val);
-                                     if (value1.isEmpty) {
-                                       return 'Please enter a security pin';
-                                     }
-                                     if (value1.length > 4) {
-                                       return 'Pin must contain four digits only. ';
-                                     }
-                                     return null;
-                                   },
+                                   validator: validatePin1,
+                                   // validator: (String value1) {
+                                   //   val = value1;
+                                   //   //Fluttertoast.showToast(msg: val);
+                                   //   if (value1.isEmpty) {
+                                   //     return 'Please enter a security pin';
+                                   //   }
+                                   //   if (value1.length > 4) {
+                                   //     return 'Pin must contain four digits only. ';
+                                   //   }
+                                   //   return null;
+                                   // },
                                    controller: _pinController,
                                    onSaved: (value) {},
                                  ),
@@ -188,10 +206,10 @@ var pin ;
                                          icon: Icon(Icons.visibility_off),
                                        )
                                    ),
-                                   validator: (String value) {
-                                     if (value != val) {
-                                       return 'Pin does not match';
-                                     }
+                                   validator: (val) {
+                                     if (val.isEmpty)
+                                       return 'Pin field cannot be empty';
+                                     if (val != _pinController.text) return 'Pins do not match';
                                      return null;
                                    },
                                    onSaved: (value) {},
@@ -204,7 +222,12 @@ var pin ;
                          height: 15,
                        ),
                        RaisedButton(
-                         onPressed: setMPin,
+                         onPressed: (){
+                           setState(() {
+                             _loading = true;
+                           });
+                           _validateInputs();
+                         },
                          child: Padding(
                            padding: const EdgeInsets.all(8.0),
                            child: Text(
