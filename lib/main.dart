@@ -1,8 +1,10 @@
 import 'package:finance_app/DisableTouchID.dart';
 import 'package:finance_app/HomePage/homepage.dart';
+import 'package:finance_app/ImageData.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:finance_app/Support/Support.dart';
 import 'package:finance_app/Support/SupportSearch.dart';
+import 'package:finance_app/TaxFiling.dart';
 import 'package:finance_app/advisor.dart';
 import 'package:finance_app/newadvisor.dart';
 import 'package:finance_app/setPin.dart';
@@ -19,7 +21,7 @@ Future<void> main() async {
       home: userid == null
           ? LoginPage()
 
-          : PassCodeScreen(
+          : ImageData(
 
               currentUserID: userid,
             ),
