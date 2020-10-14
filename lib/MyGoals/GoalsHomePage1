@@ -1,0 +1,257 @@
+import 'package:finance_app/HomePage/homepage.dart';
+import 'package:finance_app/Insurance/InsuranceHomePage.dart';
+import 'package:finance_app/Investments/InvestmentHomePage.dart';
+import 'package:flutter/material.dart';
+import '../menu_page.dart';
+import 'YourGoals.dart';
+import 'GoalsType.dart';
+import 'AddGoals.dart';
+import 'Graph.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+class GoalsHomePage extends StatefulWidget {
+  String currentUserID;
+  GoalsHomePage({@required this.currentUserID});
+  @override
+  _GoalsHomePageState createState() => _GoalsHomePageState(currentUserID: currentUserID);
+}
+
+class _GoalsHomePageState extends State<GoalsHomePage> {
+  int selectedIndex = 0;
+  String currentUserID;
+  _GoalsHomePageState({@required this.currentUserID});
+  int _currentIndex=3;
+  void onTap(int index)
+  {
+    setState(() {
+      _currentIndex=index;
+    });
+
+  }
+
+  @override
+  void initState() {
+    print("****************************************");
+    print(currentUserID);
+    print("****************************************");
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  final GlobalKey<ScaffoldState> _scaffoldKey=new GlobalKey();
+  Widget build(BuildContext context) {
+    setState(() {
+      if(_currentIndex==0)
+      {
+        Future.delayed(Duration.zero, ()async{
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  HomePage()));});
+        _currentIndex=3;
+      }
+
+      else if(_currentIndex==1)
+      {
+        Future.delayed(Duration.zero, ()async{
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  InvestmentHomePage()));});
+        _currentIndex=3;
+      }
+      else if(_currentIndex==2)
+      {
+        Future.delayed(Duration.zero, ()async{
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  InsuranceHomePage()));});
+        _currentIndex=3;
+      }
+      else if(_currentIndex==4)
+      {
+        _scaffoldKey.currentState.openDrawer();
+        _currentIndex=3;
+      }
+    });
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    print(width);
+    print(height);
+    return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: menuPage(
+          currentUserID: currentUserID,
+        ),
+      ),
+
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios),
+          color: Color(0xff373D3F),
+        ),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        title: Text(
+          'My Goals',
+          style: TextStyle(color: Color(0xff373D3F)),
+        ),
+      ),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: viewportConstraints.maxHeight,
+              ),
+              child: Material(
+                color: Color(0xffECEFF1),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        ),
+                        height: height * 0.4,
+                        child: LineCharts(),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Icon(
+                          Icons.outlined_flag,
+                          color: Color(0xff373D3F),
+                        ),
+                        Text(
+                          'My Goals',
+                          style: TextStyle(
+                              color: Color(0xff373D3F),
+                              fontWeight: FontWeight.bold),
+                        ),
+                        RaisedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        AddGoals(currentUserID: currentUserID,)));
+                          },
+                          child: Text(' + Add Goal'),
+                          color: Color(0xff63E2E0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Container(
+                        height: (height < 640) ? height * 0.15 : height * 0.12,
+                        width: width,
+                        color: Color(0xffECEFF1),
+                        child: ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: goalsType.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              width: width * 0.45,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedIndex = index;
+                                  });
+                                },
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 30,
+                                  ),
+                                  child: Text(
+                                    goalsType[index],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: index == selectedIndex
+                                            ? Color(0xff63E2E0)
+                                            : Color(0xff373D3F),
+                                        fontSize: 20,
+                                        fontWeight: index == selectedIndex
+                                            ? FontWeight.bold
+                                            : FontWeight.w500,
+                                        letterSpacing: 1),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: <Widget>[
+                        SingleChildScrollView(
+                          physics: ScrollPhysics(),
+                          child: Container(
+                            color: Color(0xffECEFF1),
+                            child: (selectedIndex == 0)
+                                ? yourGoals(context, currentGoals, height,
+                                width, ownCurrentGoals)
+                                : yourGoals(context, completedGoals, height,
+                                width, ownCompletedGoals),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          elevation: 10,
+          currentIndex: _currentIndex,
+          backgroundColor: Color(0xff63E2E0),
+          unselectedItemColor: Colors.black,
+          selectedItemColor: Colors.white,
+          items: [
+            BottomNavigationBarItem(
+
+              icon: Icon(Icons.pages),
+              title: Text('Home'),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.attach_money),
+              title: Text('Investment'),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+
+              title: Text(('Insurance')),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.flag),
+              title: Text(('Goals')),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              title: Text(('More')),
+
+            ),
+          ],
+          onTap:onTap
+
+      ),
+    );
+  }
+}
