@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'http_exception.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-
+////
 class Authentication with ChangeNotifier {
   Future <void> signUp(String email, String password) async
   {

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 
-import 'package:finance_app/SignUP_PageWith_Chnages/SignIn_page.dart';
+import 'file:///C:/Users/riyak/AndroidStudioProjects/finanace-app/lib/extra/SignIn_page.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:flutter/material.dart';
 
