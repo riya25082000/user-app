@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:finance_app/SignUP_PageWith_Chnages/SignIn_page.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 

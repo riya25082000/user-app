@@ -1,3 +1,5 @@
+import 'package:file_picker/file_picker.dart';
+import 'package:finance_app/HomePage/homepage.dart';
 import 'package:finance_app/ImageData.dart';
 import 'package:finance_app/setPin.dart';
 import 'package:flutter/material.dart';
@@ -5,136 +7,117 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
-class TaxFiling extends StatefulWidget {
-
+class ImageData1 extends StatefulWidget {
   final String currentUserID;
-  TaxFiling({Key key, @required this.currentUserID}) : super(key: key);
-
-
-  final String title = "Upload Image Demo";
-
+  ImageData1({Key key, @required this.currentUserID}) : super(key: key);
   @override
-  _TaxFilingState createState() => _TaxFilingState();
+  _ImageDataState createState() => _ImageDataState(currentUserID: currentUserID);
 }
 
-class _TaxFilingState extends State<TaxFiling> {
+class _ImageDataState extends State<ImageData> {
   String currentUserID;
-  _TaxFilingState({@required this.currentUserID});
+  _ImageDataState({@required this.currentUserID});
+  final String phpEndPoint = 'http://sanjayagarwal.in/Finance App/imageUpload.php';
+  final String nodeEndPoint = 'http://192.168.43.171:3000/image';
+  PlatformFile file;
   File _image ;
-  final picker= ImagePicker();
-  TextEditingController nameController = TextEditingController();
 
-  Future imageChoose() async{
-    var pickedImage = await picker.getImage(source: ImageSource.gallery);
+  void _choose() async {
+
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    if(result != null) {
+      file = result.files.first;
+
+      print(file.name);
+      print(file.bytes);
+      print(file.size);
+      print(file.extension);
+      print(file.path);
+    }
+
+    //file = await ImagePicker.pickImage(source: ImageSource.camera);
+//file = await ImagePicker.pickImage(source: ImageSource.gallery);
     setState(() {
-      _image = File(pickedImage.path);
+      //_image=File(file.path);
     });
   }
-  Future setMPin() async {
-    // final uri = Uri.parse(
-    //     'http://sanjayagarwal.in/Finance App/imageUpload.php');
-    // var request = http.MultipartRequest('POST', uri);
-    // request.fields['name'] = nameController.text;
-    // // print(nameController.text);
-    // var pic = await http.MultipartFile.fromPath("image", _image.path);
+
+  void _upload() async {
 
 
-    var url = 'http://sanjayagarwal.in/Finance App/imageUpload.php';
-    print("****************************************************");
-    print(nameController.text);
-    print(_image.path);
     print(currentUserID);
-    print("****************************************************");
+
+    if (file == null) return;
+    // String base64Image = base64Encode(file.readAsBytesSync());
+    String fileName = file.path.split("/").last;
+    print(fileName);
+    // print(base64Image);
+
     final response = await http.post(
-      url,
-      body: jsonEncode(<String, String>{
-
-        "name": nameController.text,
-        "path": _image.path,
-        "UserID": currentUserID,
-
-      }),
+      phpEndPoint, body:jsonEncode(<String, String> {
+      "image": file.path,
+      "name": file.name,
+      "userid":currentUserID
+    }),
     );
     var message = jsonDecode(response.body);
     if (message["message"] == "Successful Insertion") {
       print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-      print(currentUserID);
 
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Image Updated Successful"),
+            content: Text("Your image has been updated successfully."),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => HomePage()));
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        },
+      );
       print(currentUserID);
     } else {
       print(message["message"]);
     }
-  }
-
-      Future uploadImage() async
-  {
-    final uri = Uri.parse('http://sanjayagarwal.in/Finance App/imageUpload.php');
-    var request = http.MultipartRequest('POST',uri);
-    request.fields['name']= nameController.text;
-   // print(nameController.text);
-    var pic = await http.MultipartFile.fromPath("image", _image.path);
-    print(_image.path);
-    request.files.add(pic);
-    var response = await request.send();
-    if(response.statusCode==200)
-      {
-        print('image uploaded');
-      }
-    else {
-      print('not uploaded');
-    }
 
   }
 
-  Widget build(BuildContext context)
-  {
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Upload '),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget> [
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Name'
-                ),
+      appBar: AppBar(),
+      body: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RaisedButton(
+                onPressed: _choose,
+                child: Text('Choose Image'),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.camera),
-              onPressed: () {
-                imageChoose();
-
-              },
-            ),
-            Container(
-              child: _image == null ?Text('No Image Selected') : Image.file(_image),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            RaisedButton(
-              child: Text('upload'),
-              onPressed: () {
-                SetPin();
-
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => ImageData(
-                //           currentUserID: currentUserID,
-                //         )));
-              },
-            )
-          ],
-        ),
+              SizedBox(width: 10.0),
+              RaisedButton(
+                onPressed: _upload,
+                child: Text('Upload Image'),
+              )
+            ],
+          ),
+          // file == null
+          //     ? Text('No Image Selected')
+          //     : Image.file(file)
+        ],
       ),
-
     );
   }
 }
