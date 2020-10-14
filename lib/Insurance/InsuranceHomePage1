@@ -1,0 +1,175 @@
+import 'package:finance_app/HomePage/homepage.dart';
+import 'package:finance_app/Investments/InvestmentHomePage.dart';
+import 'package:finance_app/MyGoals/GoalsHomePage.dart';
+import 'package:flutter/material.dart';
+
+import '../menu_page.dart';
+import 'InsuranceButtons.dart';
+
+class InsuranceHomePage extends StatefulWidget {
+  String currentUserID;
+  InsuranceHomePage({@required this.currentUserID});
+  @override
+  _InsuranceHomePageState createState() => _InsuranceHomePageState(currentUserID: currentUserID);
+}
+
+class _InsuranceHomePageState extends State<InsuranceHomePage> {
+  String currentUserID;
+  _InsuranceHomePageState({@required this.currentUserID});
+  @override
+
+  int _currentIndex=2;
+  void onTap(int index)
+  {
+    setState(() {
+      _currentIndex=index;
+    });
+
+  }
+  final GlobalKey<ScaffoldState> _scaffoldKey=new GlobalKey();
+  Widget build(BuildContext context) {
+    setState(() {
+      if(_currentIndex==0)
+      {
+        Future.delayed(Duration.zero, ()async{
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  HomePage()));});
+        _currentIndex=2;
+      }
+      else if(_currentIndex==1)
+      {
+        Future.delayed(Duration.zero, ()async{
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  InvestmentHomePage()));});
+        _currentIndex=2;
+      }
+      else if(_currentIndex==3)
+      {
+        Future.delayed(Duration.zero, ()async{
+          Navigator.push(context, MaterialPageRoute(builder: (context) =>  GoalsHomePage()));});
+        _currentIndex=2;
+      }
+      else if(_currentIndex==4)
+      {
+        _scaffoldKey.currentState.openDrawer();
+        _currentIndex=2;
+      }
+    });
+
+
+
+
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      key: _scaffoldKey,
+      drawer: Drawer(
+        child: menuPage(
+          currentUserID: currentUserID,
+        ),
+      ),
+
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios),
+          color: Color(0xff373D3F),
+        ),
+        backgroundColor: Color(0xff63E2E0),
+        centerTitle: true,
+        title: Text(
+          'INSURANCE',
+          style: TextStyle(color: Color(0xff373D3F)),
+        ),
+      ),
+      body: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints viewportConstraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: viewportConstraints.maxHeight,
+                ),
+                child: Material(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {},
+                          child: insurancebuttons("assets/images/health.png",
+                              "Health Insurance", "ABCD", height),
+                        ),
+                        Divider(
+                          color: Colors.grey,
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: insurancebuttons("assets/images/family.jpg",
+                              "Term Life Insurance", "ABCD", height),
+                        ),
+                        Divider(
+                          color: Colors.grey,
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: insurancebuttons("assets/images/car1.png",
+                              "Car Insurance", "ABCD", height),
+                        ),
+                        Divider(
+                          color: Colors.grey,
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: insurancebuttons("assets/images/bike1.jpg",
+                              "Bike Insurance", "ABCD", height),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }),
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          elevation: 10,
+          currentIndex: _currentIndex,
+          backgroundColor: Color(0xff63E2E0),
+          unselectedItemColor: Colors.black,
+          selectedItemColor: Colors.white,
+          items: [
+            BottomNavigationBarItem(
+
+              icon: Icon(Icons.pages),
+              title: Text('Home'),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.attach_money),
+              title: Text('Investment'),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+
+              title: Text(('Insurance')),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.flag),
+              title: Text(('Goals')),
+
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add),
+              title: Text(('More')),
+
+            ),
+          ],
+          onTap:onTap
+
+      ),
+    );
+  }
+}
