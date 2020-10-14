@@ -11,7 +11,7 @@ import 'Widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:finance_app/forget_password.dart';
 import 'dart:convert';
-import 'signup2.dart';
+import '../extra/signup2.dart';
 
 class LoginPage extends StatefulWidget {
   String currentUserID;

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:finance_app/SignUP_PageWith_Chnages/SignIn_page.dart';
+import 'file:///C:/Users/riyak/AndroidStudioProjects/finanace-app/lib/extra/SignIn_page.dart';
 import 'package:finance_app/SignUP_PageWith_Chnages/Working_signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
